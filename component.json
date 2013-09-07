@@ -1,26 +1,26 @@
 {
-  "name": "{{name}}",
+  "name": "interface",
   "version": "0.0.1",
-  "description": "{{description}}",
-  "homepage": "http://github.com/UsabilityDynamics/{{name}}",
+  "description": "Component for interfaces.",
+  "homepage": "http://github.com/UsabilityDynamics/lib-interface",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/UsabilityDynamics/{{name}}"
+    "url": "https://github.com/UsabilityDynamics/lib-interface"
   },
   "dependencies": {
     "usabilitydynamics/lib-utility": "*"
   },  
   "templates": [],
   "files": [
-    "files/{{name}}-schema.json"
+    "files/interface-schema.json"
   ],
   "styles": [
-    "styles/{{name}}.css"
+    "styles/interface.css"
   ],
   "scripts": [
-    "scripts/{{name}}.js",
-    "scripts/{{name}}.php"
+    "scripts/interface.js",
+    "scripts/interface.php"
   ],
   "authors": [
     {
