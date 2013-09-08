@@ -18,9 +18,11 @@
   "styles": [
     "styles/ui.css"
   ],
+  "libs": [
+    "libs/ui.php"
+  ],
   "scripts": [
-    "scripts/ui.js",
-    "scripts/ui.php"
+    "scripts/ui.js"
   ],
   "authors": [
     {
