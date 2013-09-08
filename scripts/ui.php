@@ -8,7 +8,7 @@
    * @author peshkov@UD
    * @author korotkov@UD
    *
-   * @version 1.0.0
+   * @version 0.1.0
    * @module UsabilityDynamics
    */
   namespace UsabilityDynamics {
@@ -19,7 +19,17 @@
      * @submodule UI
      * @class UI
      */
-    class UI {
+    class UI extends Utility {
+
+      /**
+       * SaaS Class version.
+       *
+       * @public
+       * @static
+       * @property $version
+       * @type {Object}
+       */
+      public static $version = '0.1.0';
 
       /**
        * Removes 'quick edit' link on property type objects
