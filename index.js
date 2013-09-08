@@ -3,4 +3,4 @@
  *
  * @author potanin@UD
  */
-module.exports = process.env.APP_COVERAGE ? require( './static/codex/lib-cov/interface' ) : require( './scripts/interface' );
+module.exports = process.env.APP_COVERAGE ? require( './static/codex/lib-cov/ui' ) : require( './scripts/ui' );
