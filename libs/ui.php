@@ -8,7 +8,7 @@
    * @author peshkov@UD
    * @author korotkov@UD
    *
-   * @version 0.1.0
+   * @version 0.1.2
    * @module UsabilityDynamics
    */
   namespace UsabilityDynamics {
@@ -29,7 +29,7 @@
        * @property $version
        * @type {Object}
        */
-      public static $version = '0.1.0';
+      public static $version = '0.1.2';
 
       /**
        * Removes 'quick edit' link on property type objects
