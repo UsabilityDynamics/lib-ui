@@ -12,11 +12,8 @@
     "usabilitydynamics/lib-utility": "*"
   },  
   "templates": [],
-  "files": [
-    "files/schema/ui.json"
-  ],
-  "styles": [
-    "styles/ui.css"
+  "schemas": [
+    "schemas/ui.json"
   ],
   "libs": [
     "libs/ui.php"
