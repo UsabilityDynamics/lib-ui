@@ -1,21 +1,19 @@
 <?php
-  /**
-   * User Interface
-   *
-   * Ported over from WPP 2.0 class_ui.php
-   *
-   * @author potanin@UD
-   * @author peshkov@UD
-   * @author korotkov@UD
-   *
-   * @version 0.1.2
-   * @module UsabilityDynamics
-   */
-  namespace UsabilityDynamics {
+/**
+ * User Interface
+ *
+ * Ported over from WPP 2.0 class_ui.php
+ *
+ * @author potanin@UD
+ * @author peshkov@UD
+ * @author korotkov@UD
+ *
+ * @version 0.1.2
+ * @module UsabilityDynamics
+ */
+namespace UsabilityDynamics {
 
-    if( class_exists( '\UsabilityDynamics\UI' ) ) {
-      return;
-    }
+  if( !class_exists( 'UsabilityDynamics\UI' ) ) {
 
     /**
      * Class UI
@@ -44,7 +42,7 @@
        */
       static function property_row_actions( $actions, $post ) {
 
-        if ( $post->post_type != WPP_Object ) {
+        if( $post->post_type != WPP_Object ) {
           return $actions;
         }
 
@@ -62,7 +60,7 @@
       static function post_submitbox_misc_actions() {
         global $post, $action;
 
-        if ( $post->post_type == WPP_Object ) {
+        if( $post->post_type == WPP_Object ) {
 
           ?>
           <div class="misc-pub-section">
@@ -70,7 +68,7 @@
       <ul>
         <li><?php _e( 'Menu Sort Order:', 'wpp' ) ?> <?php echo WPP_F::input( "name=menu_order&special=size=4", $post->menu_order ); ?></li>
 
-        <?php if ( current_user_can( 'manage_options' ) && $wp_properties[ 'configuration' ][ 'do_not_use' ][ 'featured' ] != 'true' ) { ?>
+        <?php if( current_user_can( 'manage_options' ) && $wp_properties[ 'configuration' ][ 'do_not_use' ][ 'featured' ] != 'true' ) { ?>
           <li><?php echo WPP_F::checkbox( "name=wpp_data[meta][featured]&label=" . __( 'Display in featured listings.', 'wpp' ), get_post_meta( $post->ID, 'featured', true ) ); ?></li>
         <?php } ?>
 
@@ -96,29 +94,29 @@
         global $wp_properties;
 
         $atts = shortcode_atts( array(
-          'interface' => is_string( $_atts ) ? $_atts : '',
+          'interface'  => is_string( $_atts ) ? $_atts : '',
           'expiration' => ( 60 * 60 * 12 ),
-          'version' => 'default',
-          'feature' => '',
+          'version'    => 'default',
+          'feature'    => '',
         ), $_atts );
 
-        if ( empty( $atts[ 'interface' ] ) ) {
+        if( empty( $atts[ 'interface' ] ) ) {
           return new WP_Error( __METHOD__, __( 'Interface name not understood.', 'wpp' ) );
         }
 
         //** Parse interface name */
-        if ( strpos( $atts[ 'interface' ], '/' ) === 0 ) {
+        if( strpos( $atts[ 'interface' ], '/' ) === 0 ) {
           $atts[ 'name' ] = substr( $atts[ 'name' ], 1 );
         }
 
         preg_match( $wp_properties[ '_regex' ][ 'get_script_url' ], $atts[ 'interface' ], $matches );
 
-        if ( empty( $matches[ 2 ] ) ) {
+        if( empty( $matches[ 2 ] ) ) {
           return new WP_Error( __METHOD__, __( 'Interface name not understood.', 'wpp' ) );
         }
 
         //** If interface belongs to premium feature we should get it from CDN */
-        if ( !empty( $atts[ 'feature' ] ) ) {
+        if( !empty( $atts[ 'feature' ] ) ) {
 
           //** Set unique transient to be sure that if interface params will be updated ( e.g. version ) we will not use the old transient */
           $transient = 'wpp_interface::';
@@ -127,14 +125,14 @@
           $transient .= $matches[ 2 ] . '::' . $atts[ 'version' ];
 
           //* Try to load from transient */
-          if ( $_interface = get_transient( $transient ) ) {
+          if( $_interface = get_transient( $transient ) ) {
             return $_interface;
           }
 
           //** Set CDN url */
           $url = trailingslashit( !empty( $atts[ 'cdn_url' ] ) ? $atts[ 'cdn_url' ] : ( defined( 'UD_CDN_URL' ) ? UD_CDN_URL : ( is_ssl() ? 'https' : 'http' ) . '://ud-cdn.com' ) );
 
-          if ( !empty( $matches[ 1 ] ) ) {
+          if( !empty( $matches[ 1 ] ) ) {
             $resource = "{$matches[1]}{$atts['version']}/views/{$matches[2]}" . ".interface";
           } else {
             $resource = "{$matches[2]}/{$atts['version']}/views/{$matches[2]}" . ".interface";
@@ -142,21 +140,21 @@
 
           //** Set params */
           $customer_key = get_option( 'ud::customer_key' );
-          $site_uid = get_option( 'ud::site_uid' );
-          if ( !$site_uid ) $site_uid = '';
-          $key = ( !empty( $customer_key ) ) ? base64_encode( "{$customer_key}:{$site_uid}" ) : false;
+          $site_uid     = get_option( 'ud::site_uid' );
+          if( !$site_uid ) $site_uid = '';
+          $key    = ( !empty( $customer_key ) ) ? base64_encode( "{$customer_key}:{$site_uid}" ) : false;
           $params = array_filter( array( 'key' => $key ) );
 
           $_response = WPP_F::get_service( "wpp/{$atts['feature']}", $resource, $params, array( 'source' => $url ) );
 
-          if ( !is_wp_error( $_response ) ) {
+          if( !is_wp_error( $_response ) ) {
             set_transient( $transient, $_response->html, $atts[ 'expiration' ] );
           }
 
           return $_response;
 
         } //* Try to find interface locally */
-        else if ( file_exists( $_path = UI . '/interfaces/' . $matches[ 1 ] . $matches[ 2 ] . '.interface' ) ) {
+        else if( file_exists( $_path = UI . '/interfaces/' . $matches[ 1 ] . $matches[ 2 ] . '.interface' ) ) {
           return file_get_contents( $_path );
         }
 
@@ -177,36 +175,36 @@
         global $wp_properties;
 
         $atts = shortcode_atts( array(
-          'name' => is_string( $_atts ) ? $_atts : '',
-          'version' => 'latest',
-          'feature' => false,
-          'debug' => ( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ) ? false : true,
-          'cdn_url' => false,
+          'name'        => is_string( $_atts ) ? $_atts : '',
+          'version'     => 'latest',
+          'feature'     => false,
+          'debug'       => ( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ) ? false : true,
+          'cdn_url'     => false,
           'development' => ( !defined( 'UD_SCRIPT_LATEST' ) || !UD_JS_LATEST ) ? false : true,
         ), $_atts );
 
         /** Set CDN url */
         $url = trailingslashit( !empty( $atts[ 'cdn_url' ] ) ? $atts[ 'cdn_url' ] : ( defined( 'UD_CDN_URL' ) ? UD_CDN_URL : ( is_ssl() ? 'https' : 'http' ) . '://ud-cdn.com' ) );
 
-        if ( empty( $atts[ 'name' ] ) ) {
+        if( empty( $atts[ 'name' ] ) ) {
           return false;
         }
 
         //** Parse script name */
-        if ( strpos( $atts[ 'name' ], '/' ) === 0 ) {
+        if( strpos( $atts[ 'name' ], '/' ) === 0 ) {
           $atts[ 'name' ] = substr( $atts[ 'name' ], 1 );
         }
 
         preg_match( $wp_properties[ '_regex' ][ 'get_script_url' ], $atts[ 'name' ], $matches );
 
-        if ( empty( $matches[ 2 ] ) ) {
+        if( empty( $matches[ 2 ] ) ) {
           return false;
         }
 
         //** If script belongs to premium feature we should get it from  */
-        if ( $atts[ 'feature' ] ) {
+        if( $atts[ 'feature' ] ) {
 
-          if ( !empty( $matches[ 1 ] ) ) {
+          if( !empty( $matches[ 1 ] ) ) {
             $url .= "wpp/{$atts['feature']}/{$matches[1]}{$atts['version']}/{$matches[2]}" . ( !$atts[ 'debug' ] ? '.min' : '' ) . ".js";
           } else {
             $url .= "wpp/{$atts['feature']}/{$matches[2]}/{$atts['version']}/{$matches[2]}" . ( !$atts[ 'debug' ] ? '.min' : '' ) . ".js";
@@ -214,17 +212,17 @@
 
           /** Set params */
           $customer_key = get_option( 'ud::customer_key' );
-          $site_uid = get_option( 'ud::site_uid' );
-          if ( !$site_uid ) $site_uid = '';
-          $key = ( !empty( $customer_key ) ) ? base64_encode( "{$customer_key}:{$site_uid}" ) : false;
+          $site_uid     = get_option( 'ud::site_uid' );
+          if( !$site_uid ) $site_uid = '';
+          $key    = ( !empty( $customer_key ) ) ? base64_encode( "{$customer_key}:{$site_uid}" ) : false;
           $params = array_filter( array( 'key' => $key ) );
 
-          if ( !empty( $params ) ) {
+          if( !empty( $params ) ) {
             $url .= "?" . build_query( $params );
           }
 
         } /* Try to find script locally */
-        else if ( file_exists( $path = WPP_Path . 'js/' . $matches[ 1 ] . $matches[ 2 ] . ( !$atts[ 'debug' ] ? '.min' : '' ) . '.js' ) ) {
+        else if( file_exists( $path = WPP_Path . 'js/' . $matches[ 1 ] . $matches[ 2 ] . ( !$atts[ 'debug' ] ? '.min' : '' ) . '.js' ) ) {
           return str_replace( WPP_Path, WPP_URL, $path );
         } /* Try to get script from CDN */
         else {
@@ -244,42 +242,42 @@
       static function get_ui( $args = false ) {
 
         $defaults = array(
-          'scope' => 'core',
-          'ui' => false,
+          'scope'   => 'core',
+          'ui'      => false,
           'version' => false
         );
 
-        if ( is_string( $args ) ) {
+        if( is_string( $args ) ) {
           $d = explode( '.', $args );
-          if ( empty( $d[ 0 ] ) || empty( $d[ 1 ] ) ) {
+          if( empty( $d[ 0 ] ) || empty( $d[ 1 ] ) ) {
             return array( 'success' => false, 'message' => __( 'Passed params are wrong', 'wpp' ) );
           }
           $args = array(
             'scope' => array_shift( $d ),
-            'ui' => implode( '.', $d )
+            'ui'    => implode( '.', $d )
           );
         }
 
-        if ( !is_array( $args ) ) {
+        if( !is_array( $args ) ) {
           return array( 'success' => false, 'message' => __( 'Passed params are wrong', 'wpp' ) );
         }
 
         $args = wp_parse_args( $args, $defaults );
 
-        if ( !$args[ 'version' ] && $args[ 'scope' ] !== 'core' && is_callable( array( $args[ 'scope' ], 'get_interface_version' ) ) ) {
+        if( !$args[ 'version' ] && $args[ 'scope' ] !== 'core' && is_callable( array( $args[ 'scope' ], 'get_interface_version' ) ) ) {
           $args[ 'version' ] = call_user_func( array( $args[ 'scope' ], 'get_interface_version' ) );
         }
 
         $html = self::get_interface( array_filter( array(
           'interface' => $args[ 'ui' ],
-          'feature' => $args[ 'scope' ] !== 'core' ? $args[ 'scope' ] : false,
-          'version' => $args[ 'version' ]
+          'feature'   => $args[ 'scope' ] !== 'core' ? $args[ 'scope' ] : false,
+          'version'   => $args[ 'version' ]
         ) ) );
 
-        if ( is_wp_error( $html ) ) {
+        if( is_wp_error( $html ) ) {
 
           //** Check template file for existance */
-          if ( file_exists( UI . '/templates/' . $args[ 'ui' ] . '.php' ) ) {
+          if( file_exists( UI . '/templates/' . $args[ 'ui' ] . '.php' ) ) {
 
             //** Buffer page content */
             ob_start();
@@ -299,8 +297,8 @@
         //** Return what we got */
         return array(
           'success' => true,
-          'ui' => $html,
-          'id' => $args[ 'scope' ] . '.' . $args[ 'ui' ],
+          'ui'      => $html,
+          'id'      => $args[ 'scope' ] . '.' . $args[ 'ui' ],
         );
 
       }
@@ -316,15 +314,15 @@
         $results = array();
 
         //** Prepare args */
-        foreach ( (array) $argies as $ui ) {
-          if ( empty( $ui ) ) continue;
+        foreach( (array) $argies as $ui ) {
+          if( empty( $ui ) ) continue;
           //** Collect what we got */
           $results[ ] = self::get_ui( $ui );
         }
 
         return array(
           'success' => true,
-          'uis' => $results
+          'uis'     => $results
         );
 
       }
@@ -339,7 +337,7 @@
         global $wp_properties;
 
         $strings = array(
-          'page_title' => __( 'Welcome to WP-Property', 'wpp' ),
+          'page_title'      => __( 'Welcome to WP-Property', 'wpp' ),
           'welcome_message' => __( 'Blah blah, Welcome to WP-Property', 'wpp' ),
         );
 
@@ -347,7 +345,7 @@
           '_static' => array(
             'strings' => $strings,
           ),
-          'global' => array(
+          'global'  => array(
             '_observable' => array(),
           ),
         );
@@ -370,14 +368,14 @@
          * @author korotkov@ud 01.21.2013
          */
         $_data_structure = stripslashes_deep( (array) $wp_properties[ '_data_structure' ] );
-        $attributes = array_values( (array) $_data_structure[ 'attributes' ] );
-        $groups = array_values( (array) $_data_structure[ 'groups' ] );
-        $types = array_values( (array) $_data_structure[ 'types' ] );
-        $format = (array) $wp_properties[ '_attribute_classifications' ];
+        $attributes      = array_values( (array) $_data_structure[ 'attributes' ] );
+        $groups          = array_values( (array) $_data_structure[ 'groups' ] );
+        $types           = array_values( (array) $_data_structure[ 'types' ] );
+        $format          = (array) $wp_properties[ '_attribute_classifications' ];
 
-        $image_sizes = WPP_F::all_image_sizes();
+        $image_sizes     = WPP_F::all_image_sizes();
         $wpp_image_sizes = array_keys( (array) $wp_properties[ 'image_sizes' ] );
-        foreach ( $image_sizes as $k => $v ) {
+        foreach( $image_sizes as $k => $v ) {
           $image_sizes[ $k ][ 'built_in' ] = in_array( $k, $wpp_image_sizes ) ? false : true;
         }
 
@@ -388,14 +386,14 @@
           '_static' => array(
             'using_custom_css' => ( file_exists( STYLESHEETPATH . '/wp_properties.css' ) || file_exists( TEMPLATEPATH . '/wp_properties.css' ) ? true : false )
           ),
-          'global' => array(
+          'global'  => array(
             '_observable' => array(
-              'attributes' => $attributes,
-              'groups' => $groups,
-              'property_types' => $types,
+              'attributes'               => $attributes,
+              'groups'                   => $groups,
+              'property_types'           => $types,
               'attribute_classification' => $format,
-              'image_sizes' => $image_sizes,
-              'activity_logs' => $logs,
+              'image_sizes'              => $image_sizes,
+              'activity_logs'            => $logs,
             ),
           ),
           '_action' => array(
@@ -427,7 +425,7 @@
 
         $interface = false;
 
-        switch ( true ) {
+        switch( true ) {
 
           /* Render New Installation and Setup Wizard */
           case ( get_option( 'wpp::splash::new_installation' ) ):
@@ -458,9 +456,9 @@
       static function page_attributes_meta_box( $post ) {
 
         $post_type_object = get_post_type_object( $post->post_type );
-        if ( $post_type_object->hierarchical ) {
+        if( $post_type_object->hierarchical ) {
           $pages = wp_dropdown_pages( array( 'post_type' => $post->post_type, 'exclude_tree' => $post->ID, 'selected' => $post->post_parent, 'name' => 'parent_id', 'show_option_none' => __( '(no parent)', 'wpp' ), 'sort_column' => 'menu_order, post_title', 'echo' => 0 ) );
-          if ( !empty( $pages ) ) {
+          if( !empty( $pages ) ) {
             ?>
 
             <strong><?php _e( 'Parent', 'wpp' ) ?></strong>
@@ -469,7 +467,7 @@
           <?php
           } // end empty pages check
         } // end hierarchical check.
-        if ( 'page' == $post->post_type && 0 != count( get_page_templates() ) ) {
+        if( 'page' == $post->post_type && 0 != count( get_page_templates() ) ) {
           $template = !empty( $post->page_template ) ? $post->page_template : false;
           ?>
           <strong><?php _e( 'Template', 'wpp' ) ?></strong>
@@ -481,7 +479,7 @@
         <?php } ?>
         <strong><?php _e( 'Order', 'wpp' ) ?></strong>
         <p><label class="screen-reader-text" for="menu_order"><?php _e( 'Order', 'wpp' ) ?></label><input name="menu_order" type="text" size="4" id="menu_order" value="<?php echo esc_attr( $post->menu_order ) ?>"/></p>
-        <p><?php if ( 'page' == $post->post_type )
+        <p><?php if( 'page' == $post->post_type )
             _e( 'Need help? Use the Help tab in the upper right of your screen.', 'wpp' ); ?></p>
       <?php
       }
@@ -491,34 +489,34 @@
        * on Property Edit Page
        *
        * @param object $object. Property
-       * @param array $attrs. Metabox attributes
+       * @param array  $attrs. Metabox attributes
        */
       static function metabox_meta( $object, $attrs ) {
         global $wp_properties, $wpdb;
         static $loaded = false;
 
-        $property = WPP_F::get_property( $object->ID );
-        $instance = $attrs[ 'id' ];
-        $stats_group = ( !empty( $attrs[ 'args' ][ 'group' ] ) ? $attrs[ 'args' ][ 'group' ] : false );
+        $property            = WPP_F::get_property( $object->ID );
+        $instance            = $attrs[ 'id' ];
+        $stats_group         = ( !empty( $attrs[ 'args' ][ 'group' ] ) ? $attrs[ 'args' ][ 'group' ] : false );
         $disabled_attributes = (array) $wp_properties[ '_geo_attributes' ];
-        $property_stats = (array) $wp_properties[ 'property_stats' ];
-        $stat_keys = array_keys( $property_stats );
-        $this_property_type = $property[ 'property_type' ];
+        $property_stats      = (array) $wp_properties[ 'property_stats' ];
+        $stat_keys           = array_keys( $property_stats );
+        $this_property_type  = $property[ 'property_type' ];
 
         //* Set default property type */
-        if ( empty( $this_property_type ) && empty( $property[ 'post_name' ] ) ) {
+        if( empty( $this_property_type ) && empty( $property[ 'post_name' ] ) ) {
           $this_property_type = WPP_F::get_most_common_property_type();
         }
 
         //** Check for current property type if it is deleted */
-        if ( is_array( $wp_properties[ 'property_types' ] ) && isset( $property[ 'property_type' ] ) && !in_array( $property[ 'property_type' ], array_keys( $wp_properties[ 'property_types' ] ) ) ) {
+        if( is_array( $wp_properties[ 'property_types' ] ) && isset( $property[ 'property_type' ] ) && !in_array( $property[ 'property_type' ], array_keys( $wp_properties[ 'property_types' ] ) ) ) {
           $wp_properties[ 'property_types' ][ $property[ 'property_type' ] ] = WPP_F::de_slug( $property[ 'property_type' ] );
-          $wp_properties[ 'descriptions' ][ 'property_type' ] = '<span class="attention">' . sprintf( __( '<strong>Warning!</strong> The %1$s %2$s type has been deleted.', 'wpp' ), $wp_properties[ 'property_types' ][ $property[ 'property_type' ] ], WPP_F::property_label( 'singular' ) ) . '</span>';
+          $wp_properties[ 'descriptions' ][ 'property_type' ]                = '<span class="attention">' . sprintf( __( '<strong>Warning!</strong> The %1$s %2$s type has been deleted.', 'wpp' ), $wp_properties[ 'property_types' ][ $property[ 'property_type' ] ], WPP_F::property_label( 'singular' ) ) . '</span>';
         }
 
         ?>
 
-        <?php if ( !$loaded ) : ?>
+        <?php if( !$loaded ) : ?>
           <style type="text/css">
       <?php if ($wp_properties['configuration']['completely_hide_hidden_attributes_in_admin_ui'] == 'true'): ?>
       .disabled_row {
@@ -533,26 +531,26 @@
         <table class="widefat property_meta">
 
       <?php //* 'Falls Under' field should be shown only in 'General Information' metabox */ ?>
-          <?php if ( $instance == 'wpp_main' ) : ?>
+          <?php if( $instance == 'wpp_main' ) : ?>
             <?php //** Do not do page dropdown when there are a lot of properties */ ?>
             <?php
-            $sql = apply_filters( 'wpp_falls_under_count_sql', "SELECT COUNT(ID) FROM {$wpdb->posts} WHERE post_type = 'property' AND post_status = 'publish'" );
+            $sql            = apply_filters( 'wpp_falls_under_count_sql', "SELECT COUNT(ID) FROM {$wpdb->posts} WHERE post_type = 'property' AND post_status = 'publish'" );
             $property_count = $wpdb->get_var( $sql );
             ?>
-            <?php if ( $property_count < 200 ) : ?>
+            <?php if( $property_count < 200 ) : ?>
               <?php
               $pages = wp_dropdown_pages( apply_filters( 'wpp_falls_under_dropdown', array(
-                'post_type' => 'property',
-                'exclude_tree' => $object->ID,
-                'selected' => $object->post_parent,
-                'name' => 'parent_id',
+                'post_type'        => 'property',
+                'exclude_tree'     => $object->ID,
+                'selected'         => $object->post_parent,
+                'name'             => 'parent_id',
                 'show_option_none' => __( '(no parent)', 'wpp' ),
-                'sort_column' => 'menu_order, post_title',
-                'echo' => 0
+                'sort_column'      => 'menu_order, post_title',
+                'echo'             => 0
               ), $object ) );
               ?>
-              <?php if ( !empty( $pages ) ) : ?>
-                <tr class="wpp_attribute_row_parent wpp_attribute_row <?php if ( is_array( $wp_properties[ 'hidden_attributes' ][ $property[ 'property_type' ] ] ) && in_array( 'parent', $wp_properties[ 'hidden_attributes' ][ $property[ 'property_type' ] ] ) ) {
+              <?php if( !empty( $pages ) ) : ?>
+                <tr class="wpp_attribute_row_parent wpp_attribute_row <?php if( is_array( $wp_properties[ 'hidden_attributes' ][ $property[ 'property_type' ] ] ) && in_array( 'parent', $wp_properties[ 'hidden_attributes' ][ $property[ 'property_type' ] ] ) ) {
                   echo 'disabled_row;';
                 } ?>">
             <th><?php _e( 'Falls Under', 'wpp' ); ?>
@@ -561,7 +559,7 @@
           </tr>
               <?php endif; ?>
             <?php else : ?>
-              <tr class="wpp_attribute_row_parent wpp_attribute_row <?php if ( is_array( $wp_properties[ 'hidden_attributes' ][ $property[ 'property_type' ] ] ) && in_array( 'parent', $wp_properties[ 'hidden_attributes' ][ $property[ 'property_type' ] ] ) ) {
+              <tr class="wpp_attribute_row_parent wpp_attribute_row <?php if( is_array( $wp_properties[ 'hidden_attributes' ][ $property[ 'property_type' ] ] ) && in_array( 'parent', $wp_properties[ 'hidden_attributes' ][ $property[ 'property_type' ] ] ) ) {
                 echo 'disabled_row;';
               } ?>">
             <th><?php _e( 'Falls Under', 'wpp' ); ?>
@@ -575,57 +573,57 @@
           <?php endif; ?>
           <?php
 
-            //** Detect attributes that were taken from a range of child properties. */
-            $upwards_inherited_attributes = is_array( $property[ 'system' ][ 'upwards_inherited_attributes' ] ) ? $property[ 'system' ][ 'upwards_inherited_attributes' ] : array();
+          //** Detect attributes that were taken from a range of child properties. */
+          $upwards_inherited_attributes = is_array( $property[ 'system' ][ 'upwards_inherited_attributes' ] ) ? $property[ 'system' ][ 'upwards_inherited_attributes' ] : array();
 
-            foreach ( (array) $property_stats as $slug => $label ) {
+          foreach( (array) $property_stats as $slug => $label ) {
 
-              $attribute_data = WPP_Config::get_attribute_data( $slug );
+            $attribute_data = WPP_Config::get_attribute_data( $slug );
 
-              //* Be sure that attribute belongs to classification which is editable. peshkov@UD */
-              if ( !$wp_properties[ '_attribute_classifications' ][ $attribute_data[ 'classification' ] ][ 'settings' ][ 'editable' ] ) {
-                continue;
-              }
+            //* Be sure that attribute belongs to classification which is editable. peshkov@UD */
+            if( !$wp_properties[ '_attribute_classifications' ][ $attribute_data[ 'classification' ] ][ 'settings' ][ 'editable' ] ) {
+              continue;
+            }
 
-              //* Determine if attribute belongs to the current metabox ( group ) */
-              if ( $attribute_data[ 'group_key' ] != $instance ) {
-                continue;
-              }
+            //* Determine if attribute belongs to the current metabox ( group ) */
+            if( $attribute_data[ 'group_key' ] != $instance ) {
+              continue;
+            }
 
-              $attribute_description = ( !empty( $wp_properties[ 'property_stats_descriptions' ][ $slug ] ) ? $wp_properties[ 'property_stats_descriptions' ][ $slug ] : '' );
+            $attribute_description = ( !empty( $wp_properties[ 'property_stats_descriptions' ][ $slug ] ) ? $wp_properties[ 'property_stats_descriptions' ][ $slug ] : '' );
 
-              //* Setup row classes */
-              $row_classes = array( "wpp_attribute_row", "wpp_attribute_row_{$slug}" );
+            //* Setup row classes */
+            $row_classes = array( "wpp_attribute_row", "wpp_attribute_row_{$slug}" );
 
-              if ( is_array( $wp_properties[ 'hidden_attributes' ][ $property[ 'property_type' ] ] ) && in_array( 'parent', $wp_properties[ 'hidden_attributes' ][ $property[ 'property_type' ] ] ) ) {
-                $row_classes[ ] = 'disabled_row';
-              }
-              if ( !empty( $wp_properties[ 'attribute_classification' ][ $slug ] ) ) {
-                $row_classes[ ] = 'wpp_classification_' . $wp_properties[ 'attribute_classification' ][ $slug ];
-              }
+            if( is_array( $wp_properties[ 'hidden_attributes' ][ $property[ 'property_type' ] ] ) && in_array( 'parent', $wp_properties[ 'hidden_attributes' ][ $property[ 'property_type' ] ] ) ) {
+              $row_classes[ ] = 'disabled_row';
+            }
+            if( !empty( $wp_properties[ 'attribute_classification' ][ $slug ] ) ) {
+              $row_classes[ ] = 'wpp_classification_' . $wp_properties[ 'attribute_classification' ][ $slug ];
+            }
 
-              $clsf = !empty( $wp_properties[ 'attribute_classification' ][ $slug ] ) ? $wp_properties[ 'attribute_classification' ][ $slug ] : WPP_Default_Classification;
-              $row_classes[ ] = 'wpp_classification_' . $clsf;
+            $clsf           = !empty( $wp_properties[ 'attribute_classification' ][ $slug ] ) ? $wp_properties[ 'attribute_classification' ][ $slug ] : WPP_Default_Classification;
+            $row_classes[ ] = 'wpp_classification_' . $clsf;
 
-              //** Make note of attributes that consist of ranges upwards inherited from child properties */
-              if ( in_array( $slug, $upwards_inherited_attributes ) ) {
-                $row_classes[ ] = 'wpp_upwards_inherited_attributes';
-                $disabled_attributes[ ] = $slug;
-                $attribute_notice = sprintf( __( 'Values aggregated from child %1$s.', 'wpp' ), WPP_F::property_label( 'plural' ) );
-              }
+            //** Make note of attributes that consist of ranges upwards inherited from child properties */
+            if( in_array( $slug, $upwards_inherited_attributes ) ) {
+              $row_classes[ ]         = 'wpp_upwards_inherited_attributes';
+              $disabled_attributes[ ] = $slug;
+              $attribute_notice       = sprintf( __( 'Values aggregated from child %1$s.', 'wpp' ), WPP_F::property_label( 'plural' ) );
+            }
 
-              if ( $wp_properties[ 'configuration' ][ 'allow_multiple_attribute_values' ] == 'true' && !in_array( $slug, apply_filters( 'wpp_single_value_attributes', array( 'property_type' ) ) ) ) {
-                $row_classes[ ] = 'wpp_allow_multiple';
-              }
+            if( $wp_properties[ 'configuration' ][ 'allow_multiple_attribute_values' ] == 'true' && !in_array( $slug, apply_filters( 'wpp_single_value_attributes', array( 'property_type' ) ) ) ) {
+              $row_classes[ ] = 'wpp_allow_multiple';
+            }
 
-              $predefined_values = isset( $wp_properties[ 'predefined_values' ][ $slug ] ) ? $wp_properties[ 'predefined_values' ][ $slug ] : array();
-              $predefined_values = apply_filters( "wpp::predefined_values", $predefined_values, $slug );
+            $predefined_values = isset( $wp_properties[ 'predefined_values' ][ $slug ] ) ? $wp_properties[ 'predefined_values' ][ $slug ] : array();
+            $predefined_values = apply_filters( "wpp::predefined_values", $predefined_values, $slug );
 
-              //** Check input type */
-              $input_type = isset( $wp_properties[ 'admin_attr_fields' ][ $slug ] ) ? $wp_properties[ 'admin_attr_fields' ][ $slug ] : 'input';
+            //** Check input type */
+            $input_type = isset( $wp_properties[ 'admin_attr_fields' ][ $slug ] ) ? $wp_properties[ 'admin_attr_fields' ][ $slug ] : 'input';
 
-              ?>
-              <tr class="<?php echo implode( ' ', $row_classes ); ?>">
+            ?>
+            <tr class="<?php echo implode( ' ', $row_classes ); ?>">
 
           <th>
             <label for="wpp_meta_<?php echo $slug; ?>"><?php echo $label; ?></label>
@@ -640,48 +638,48 @@
             <ul class="wpp_single_attribute_entry_list">
 
             <?php
-              $values = isset( $property[ $slug ] ) ? $property[ $slug ] : array( '' );
-              $values = !is_array( $values ) ? array( $values ) : $values;
+            $values = isset( $property[ $slug ] ) ? $property[ $slug ] : array( '' );
+            $values = !is_array( $values ) ? array( $values ) : $values;
 
-              foreach ( $values as $value_count => $value ) {
+            foreach( $values as $value_count => $value ) {
 
-                $value = apply_filters( "wpp::classification::edit::{$attribute_data['classification']}", $value, array( 'slug' => $slug, 'property' => $property ) );
+              $value = apply_filters( "wpp::classification::edit::{$attribute_data['classification']}", $value, array( 'slug' => $slug, 'property' => $property ) );
 
-                if ( in_array( $slug, (array) $disabled_attributes ) ) {
+              if( in_array( $slug, (array) $disabled_attributes ) ) {
 
-                  $html_input = "<input type='text' row_count='{$value_count}' id='wpp_meta_{$slug}' name='wpp_data[meta][{$slug}][{$value_count}]' class='text-input wpp_field_disabled {$attribute_data['ui_class']}' value='{$value}' disabled='disabled' />";
+                $html_input = "<input type='text' row_count='{$value_count}' id='wpp_meta_{$slug}' name='wpp_data[meta][{$slug}][{$value_count}]' class='text-input wpp_field_disabled {$attribute_data['ui_class']}' value='{$value}' disabled='disabled' />";
 
-                } else {
+              } else {
 
-                  switch ( $input_type ) {
+                switch( $input_type ) {
 
-                    case 'checkbox':
-                      $html_input = "<input type='hidden' row_count='{$value_count}' name='wpp_data[meta][{$slug}][{$value_count}]' value='false' /><input " . checked( $value, 'true', false ) . "type='checkbox' id='wpp_meta_{$slug}' name='wpp_data[meta][{$slug}]' value='true' {$disabled} /> <label for='wpp_meta_{$slug}'>" . __( 'Enable.', 'wpp' ) . "</label>";
-                      break;
+                  case 'checkbox':
+                    $html_input = "<input type='hidden' row_count='{$value_count}' name='wpp_data[meta][{$slug}][{$value_count}]' value='false' /><input " . checked( $value, 'true', false ) . "type='checkbox' id='wpp_meta_{$slug}' name='wpp_data[meta][{$slug}]' value='true' {$disabled} /> <label for='wpp_meta_{$slug}'>" . __( 'Enable.', 'wpp' ) . "</label>";
+                    break;
 
-                    case 'dropdown':
-                      $predefined_options = array();
-                      foreach ( (array) $predefined_values as $key_opt => $option ) {
-                        $predefined_options[ ] = "<option " . selected( esc_attr( trim( $value ) ), esc_attr( trim( str_replace( '-', '&ndash;', $key_opt ) ) ), false ) . " value='" . esc_attr( $key_opt ) . "'>" . apply_filters( "wpp::attribute::{$slug}", $option, array( 'property' => $property ) ) . "</option>";
-                      }
-                      $html_input = "<select row_count='{$value_count}' id='wpp_meta_{$slug}' name='wpp_data[meta][{$slug}][{$value_count}]' class='{$attribute_data['ui_class']}'><option value=''> - </option>" . implode( '', $predefined_options ) . "</select>";
-                      break;
+                  case 'dropdown':
+                    $predefined_options = array();
+                    foreach( (array) $predefined_values as $key_opt => $option ) {
+                      $predefined_options[ ] = "<option " . selected( esc_attr( trim( $value ) ), esc_attr( trim( str_replace( '-', '&ndash;', $key_opt ) ) ), false ) . " value='" . esc_attr( $key_opt ) . "'>" . apply_filters( "wpp::attribute::{$slug}", $option, array( 'property' => $property ) ) . "</option>";
+                    }
+                    $html_input = "<select row_count='{$value_count}' id='wpp_meta_{$slug}' name='wpp_data[meta][{$slug}][{$value_count}]' class='{$attribute_data['ui_class']}'><option value=''> - </option>" . implode( '', $predefined_options ) . "</select>";
+                    break;
 
-                    case 'textarea':
-                      $html_input = "<textarea class=\"text-input {$attribute_data['ui_class']}\" row_count=\"{$value_count}\" id=\"wpp_meta_{$slug}\" name=\"wpp_data[meta][{$slug}][{$value_count}]\">{$value}</textarea>";
-                      break;
+                  case 'textarea':
+                    $html_input = "<textarea class=\"text-input {$attribute_data['ui_class']}\" row_count=\"{$value_count}\" id=\"wpp_meta_{$slug}\" name=\"wpp_data[meta][{$slug}][{$value_count}]\">{$value}</textarea>";
+                    break;
 
-                    default:
-                      $html_input = "<input type='text' row_count='{$value_count}' id='wpp_meta_{$slug}' name='wpp_data[meta][{$slug}][{$value_count}]' class='text-input {$attribute_data['ui_class']}' value=\"{$value}\" />";
-                      break;
-
-                  }
+                  default:
+                    $html_input = "<input type='text' row_count='{$value_count}' id='wpp_meta_{$slug}' name='wpp_data[meta][{$slug}][{$value_count}]' class='text-input {$attribute_data['ui_class']}' value=\"{$value}\" />";
+                    break;
 
                 }
 
-                echo '<li class="wpp_field_wrapper">' . apply_filters( "wpp::metabox::input::{$slug}", $html_input, $property ) . '</li>';
-
               }
+
+              echo '<li class="wpp_field_wrapper">' . apply_filters( "wpp::metabox::input::{$slug}", $html_input, $property ) . '</li>';
+
+            }
             ?>
             </ul>
 
@@ -694,10 +692,12 @@
             </div>
           </td>
         </tr>
-            <?php } ?>
+          <?php } ?>
     </table>
       <?php
       }
 
     }
   }
+
+}
