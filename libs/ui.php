@@ -13,6 +13,10 @@
    */
   namespace UsabilityDynamics {
 
+    if( class_exists( '\UsabilityDynamics\UI' ) ) {
+      return;
+    }
+
     /**
      * Class UI
      *
