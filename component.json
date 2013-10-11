@@ -15,8 +15,8 @@
   "schemas": [
     "schemas/ui.json"
   ],
-  "libs": [
-    "libs/ui.php"
+  "lib": [
+    "lib/ui.php"
   ],
   "scripts": [
     "scripts/ui.js"
