@@ -34,6 +34,12 @@ namespace UsabilityDynamics {
       public static $version = '0.1.2';
 
       /**
+       *
+       */
+      static function create_dashboard_page() {
+      }
+
+      /**
        * Removes 'quick edit' link on property type objects
        *
        * Called in via page_row_actions filter

@@ -13,8 +13,7 @@
     }
   ],
   "autoload": {
-    "UsabilityDynamics": "libs/",
-    "files": [ "libs/ui.php" ]
+    "files": [ "lib/ui.php" ]
   },
   "homepage": "http://github.com/usabilitydynamics/lib-ui",
   "authors": [
