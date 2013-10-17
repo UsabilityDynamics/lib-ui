@@ -41,10 +41,10 @@
       "scripts": [
         "scripts/ui.js"
       ],
-      "styles": {
+      "styles": [
         "styles/ui.css",
         "styles/ui.less"
-      },
+      ],
       "files": {
         "schemas/ui.json"
       }
