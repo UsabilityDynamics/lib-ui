@@ -45,9 +45,9 @@
         "styles/ui.css",
         "styles/ui.less"
       ],
-      "files": {
+      "files": [
         "schemas/ui.json"
-      }
+      ]
     }
   },
   "support": {
