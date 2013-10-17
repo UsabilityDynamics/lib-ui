@@ -36,6 +36,20 @@
       "role": "Developer"
     }
   ],
+    "extra": {
+    "component": {
+      "scripts": [
+        "scripts/ui.js"
+      ],
+      "styles": {
+        "styles/ui.css",
+        "styles/ui.less"
+      },
+      "files": {
+        "schemas/ui.json"
+      }
+    }
+  },
   "support": {
     "issues": "https://github.com/usabilitydynamics/lib-ui/issues"
   },
