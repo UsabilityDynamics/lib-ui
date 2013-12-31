@@ -18,10 +18,9 @@
   "autoload": {
     "classmap": [
       "lib/ui.php",
-      "lib/class-editor-control.php"
+      "lib/class-style-editor-control.php"
     ]
   },
-
   "homepage": "http://github.com/usabilitydynamics/lib-ui",
   "authors": [
     {
