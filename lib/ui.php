@@ -31,15 +31,7 @@ namespace UsabilityDynamics {
        * @property $version
        * @type {Object}
        */
-      public static $version = '0.1.2';
-
-      /**
-       * Dashboard Page Helper
-       *
-       * @since 0.1.2
-       */
-      static function create_dashboard_page() {
-      }
+      public static $version = '0.1.3';
 
       /**
        * Built-in Sections:
@@ -72,46 +64,92 @@ namespace UsabilityDynamics {
       static function enable_style_customizer( $args = stdClass ) {
 
         $_args = (object) shortcode_atts( array(
-          'name'  => 'app-style.css',
+          'name'  => 'app-style',
           'deps'  => array(),
-          'version' => '1.0',
-          'fancy'  => true
+          'version' => '1.0'
         ), $args );
 
-        wp_register_style( 'app-style', home_url() . '/app-style.css', $_args->deps, $_args->version );
+        wp_register_style( $_args->name, home_url() . '/app-style.css', $_args->deps, $_args->version );
+
+        wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/vendor/udx/ace/src-noconflict/ace.js', array(), '1.1.01', true );
+        wp_register_script( 'style-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-editor.js', array( 'jquery', 'ace-editor' ), $_args->version, true );
         wp_register_script( 'style_customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-customizer.js', array( 'jquery', 'customize-preview' ), $_args->version, true );
 
-        add_action( 'wp_enqueue_scripts', function() {
-          wp_enqueue_style( 'app-style' );
-        }, 1000 );
+        // Customize Interface.
+        add_action( 'customize_controls_print_scripts', function() {
+          wp_enqueue_script( 'ace-editor' );
+          wp_enqueue_script( 'style-editor' );
+        });
+
+        // Enable JavaScript in Customize Preview
+        add_action( 'customize_preview_init', function() {
+          wp_enqueue_script( 'style_customizer' );
+        });
 
         if( !did_action( 'customize_register' ) ) {
           add_action( 'customize_register', array( __CLASS__, 'register_style_customizer' ) );
         }
 
-        // Enable JavaScript
-        if( $_args->fancy ) {
-          add_action( 'customize_preview_init', function() { wp_enqueue_script( 'style_customizer' ); });
+        // Handle Requests.
+        add_action( 'template_redirect', array( __CLASS__, 'serve_custom_assets' ) );
+
+      }
+
+      /**
+       * Custom JavaScript
+       *
+       */
+      static function enable_script_customizer( $args = stdClass ) {
+
+        $_args = (object) shortcode_atts( array(
+          'name'  => 'app-script',
+          'deps'  => array(),
+          'version' => '1.0'
+        ), $args );
+
+        wp_register_style( $_args->name, home_url() . '/app-script.js', $_args->deps, $_args->version );
+
+        wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/vendor/udx/ace/src-noconflict/ace.js', array(), '1.1.01', true );
+        wp_register_script( 'script-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-editor.js', array( 'jquery', 'ace-editor' ), $_args->version, true );
+        wp_register_script( 'script-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-customizer.js', array( 'jquery', 'customize-preview' ), $_args->version, true );
+
+        // Customize Interface.
+        add_action( 'customize_controls_print_scripts', function() {
+          wp_enqueue_script( 'ace-editor' );
+          wp_enqueue_script( 'script-editor' );
+        });
+
+        // Enable JavaScript in Customize Preview
+        add_action( 'customize_preview_init', function() {
+          wp_enqueue_script( 'script-customizer' );
+        });
+
+        if( !did_action( 'customize_register' ) ) {
+          add_action( 'customize_register', array( __CLASS__, 'register_script_customizer' ) );
         }
 
-        add_action( 'template_redirect', array( __CLASS__, 'service_customized_css' ) );
+        // Handle Requests.
+        add_action( 'template_redirect', array( __CLASS__, 'serve_custom_assets' ) );
 
       }
 
       /**
        * Servce Custom CSS File
        *
+       * @todo I know this is ghetto.
        * @author potanin@UD
        */
-      static function service_customized_css() {
+      static function serve_custom_assets() {
 
         // Somenbody beat us to it.
         if( headers_sent() ) {
           return;
         }
 
-        // @todo I know this is ghetto.
+        // Serve CSS.
         if( $_SERVER[ 'REDIRECT_URL' ] === '/app-style.css' ) {
+
+          do_action( 'serve_custom_assets' );
 
           // WordPress will try to make it 404.
           http_response_code( 200 );
@@ -127,6 +165,24 @@ namespace UsabilityDynamics {
 
         }
 
+        // Serve JavaScript.
+        if( $_SERVER[ 'REDIRECT_URL' ] === '/app-script.js' ) {
+
+          // do_action( 'serve_custom_assets' );
+
+          // WordPress will try to make it 404.
+          http_response_code( 200 );
+
+          // Set Some Headers.
+          header( 'Cache-Control: public' );
+          header( 'Content-Type: text/js' );
+          header( 'Expires: 0' );
+          header( 'Pragma: public' );
+
+          // Output CSS.
+          die( get_theme_mod( 'custom-script' ) );
+
+        }
       }
 
       /**
@@ -137,29 +193,68 @@ namespace UsabilityDynamics {
        */
       static function register_style_customizer( $wp_customize ) {
 
-      $wp_customize->add_section( 'style_customizer', array(
-        'title'    => __( 'Style Editor' ),
-        'capability' => 'edit_theme_options',
-        'priority' => 10
-      ));
+        // Load Last so we can have highest z-index
+        $wp_customize->add_section( 'style_customizer', array(
+          'title'    => __( 'Style Editor' ),
+          'capability' => 'edit_theme_options',
+          'priority' => 1000
+        ));
 
-      $wp_customize->add_setting( 'customized_css', array(
-        'default'    => '',
-        'type'       => 'theme_mod',
-        'capability' => 'edit_theme_options',
-        //'transport' => 'refresh' // postMessage
-      ));
+        $wp_customize->add_setting( 'customized_css', array(
+          'default'    => '',
+          'type'       => 'theme_mod',
+          'capability' => 'edit_theme_options',
+          'transport' => 'postMessage' // postMessage
+        ));
 
-      $wp_customize->add_control( new UI\Style_Editor_Control( $wp_customize, 'style_customizer', array(
-        //'label'	=> __( 'Edit!', 'themename' ),
-        'section' => 'style_customizer',
-        'settings' => 'customized_css',
-      )));
+        $wp_customize->add_control( new UI\Style_Editor_Control( $wp_customize, 'style_customizer', array(
+          //'label'	=> __( 'Edit!', 'themename' ),
+          'section' => 'style_customizer',
+          'settings' => 'customized_css',
+        )));
 
-      // Make Setting Magical.
-      $wp_customize->get_setting( 'customized_css' )->transport = 'postMessage';
+        // Make Setting Magical.
+        $wp_customize->get_setting( 'customized_css' )->transport = 'postMessage';
 
-    }
+      }
+
+      /**
+       * Register Script Customizer
+       *
+       */
+      static function register_script_customizer( $wp_customize ) {
+
+        // Load Last so we can have highest z-index
+        $wp_customize->add_section( 'script-customizer', array(
+          'title'    => __( 'Script Editor' ),
+          'capability' => 'edit_theme_options',
+          'priority' => 1000
+        ));
+
+        $wp_customize->add_setting( 'custom-script', array(
+          'default'    => '',
+          'type'       => 'theme_mod',
+          'capability' => 'edit_theme_options',
+          'transport' => 'postMessage'
+        ));
+
+        $wp_customize->add_control( new UI\Script_Editor_Control( $wp_customize, 'script-customizer', array(
+          'section' => 'script-customizer',
+          'settings' => 'custom-script',
+        )));
+
+        // Make Setting Magical.
+        $wp_customize->get_setting( 'custom-script' )->transport = 'postMessage';
+
+      }
+
+      /**
+       * Dashboard Page Helper
+       *
+       * @since 0.1.2
+       */
+      static function create_dashboard_page() {
+      }
 
       /**
        * Removes 'quick edit' link on property type objects

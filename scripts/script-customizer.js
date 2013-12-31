@@ -5,7 +5,7 @@
  *
  * @author potanin@ud
  */
-wp.customize( 'customized_css', function( css ) {
+wp.customize( 'custom-javascript', function( css ) {
   var intent;
 
   /**
@@ -19,7 +19,7 @@ wp.customize( 'customized_css', function( css ) {
     }
 
     // Create New Element and add to <head>
-    jQuery( 'head' ).append( jQuery( '<style type="text/css" id="udx-dynamic-styles"></style>' ) );
+    // jQuery( 'head' ).append( jQuery( '<style type="text/css" id="udx-dynamic-script"></style>' ) );
 
   }
 
@@ -32,7 +32,7 @@ wp.customize( 'customized_css', function( css ) {
     // console.log( 'updateStyles' );
 
     // Oue dynamically generated style element
-    jQuery( 'head #udx-dynamic-styles' ).text( css );
+    // jQuery( 'head #udx-dynamic-styles' ).text( css );
 
   }
 

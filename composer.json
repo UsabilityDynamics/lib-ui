@@ -6,6 +6,7 @@
   ],
   "type": "library",
   "require": {
+    "udx/ace": "*",
     "usabilitydynamics/lib-utility": "*"
   },
   "minimum-stability": "dev",
@@ -18,7 +19,8 @@
   "autoload": {
     "classmap": [
       "lib/ui.php",
-      "lib/class-style-editor-control.php"
+      "lib/class-style-editor-control.php",
+      "lib/class-script-editor-control.php"
     ]
   },
   "homepage": "http://github.com/usabilitydynamics/lib-ui",

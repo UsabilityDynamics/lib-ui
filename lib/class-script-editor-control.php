@@ -5,11 +5,11 @@
 namespace UsabilityDynamics\UI {
 
   /**
-   * Class Style_Editor_Control
+   * Class Script_Editor_Control
    *
    * @package UsabilityDynamics\UI
    */
-  class Style_Editor_Control extends \WP_Customize_Control {
+  class Script_Editor_Control extends \WP_Customize_Control {
 
     /**
      * @var string
@@ -24,8 +24,8 @@ namespace UsabilityDynamics\UI {
     public function render_content() {
 
       echo join( '', [
-        '<div id="udx-style-editor-wrapper"></div>',
-        '<textarea id="udx-style-editor" style="display: none;" ', $this->get_link(), '>',
+        '<div id="udx-script-editor-wrapper"></div>',
+        '<textarea id="udx-script-editor" style="display: none;" ', $this->get_link(), '>',
         esc_textarea( $this->value() ),
         '</textarea>',
 
