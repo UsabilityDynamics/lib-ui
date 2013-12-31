@@ -1,6 +1,8 @@
 {
   "name": "usabilitydynamics/lib-ui",
-  "keywords": [ "api" ],
+  "keywords": [
+    "ui"
+  ],
   "type": "library",
   "require": {
     "usabilitydynamics/lib-utility": "*"
@@ -13,8 +15,12 @@
     }
   ],
   "autoload": {
-    "files": [ "lib/ui.php" ]
+    "classmap": [
+      "lib/ui.php",
+      "lib/class-editor-control.php"
+    ]
   },
+
   "homepage": "http://github.com/usabilitydynamics/lib-ui",
   "authors": [
     {
@@ -36,10 +42,10 @@
       "role": "Developer"
     }
   ],
-    "extra": {
+  "extra": {
     "component": {
       "scripts": [
-        "scripts/ui.js"
+        "scripts/ui.js
       ],
       "styles": [
         "styles/ui.css",

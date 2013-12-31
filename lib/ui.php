@@ -34,10 +34,132 @@ namespace UsabilityDynamics {
       public static $version = '0.1.2';
 
       /**
+       * Dashboard Page Helper
        *
+       * @since 0.1.2
        */
       static function create_dashboard_page() {
       }
+
+      /**
+       * Built-in Sections:
+       *
+       * title_tagline
+       * colors
+       * header_image
+       * background_image
+       * nav
+       * static_front_page
+       *
+       * add_section options
+       * - capability
+       * - priority
+       * - title
+       * - description
+       *
+       * add_setting options
+       * - default
+       * - type
+       * - transport
+       *
+       * @author potanin@UD
+       * @temp URL should be computed...
+       * @param $args
+       *
+       * @return bool
+       *
+       */
+      static function enable_style_customizer( $args = stdClass ) {
+
+        $_args = (object) shortcode_atts( array(
+          'name'  => 'app-style.css',
+          'deps'  => array(),
+          'version' => '1.0',
+          'fancy'  => true
+        ), $args );
+
+        wp_register_style( 'app-style', home_url() . '/app-style.css', $_args->deps, $_args->version );
+        wp_register_script( 'style_customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-customizer.js', array( 'jquery', 'customize-preview' ), $_args->version, true );
+
+        add_action( 'wp_enqueue_scripts', function() {
+          wp_enqueue_style( 'app-style' );
+        }, 1000 );
+
+        if( !did_action( 'customize_register' ) ) {
+          add_action( 'customize_register', array( __CLASS__, 'register_style_customizer' ) );
+        }
+
+        // Enable JavaScript
+        if( $_args->fancy ) {
+          add_action( 'customize_preview_init', function() { wp_enqueue_script( 'style_customizer' ); });
+        }
+
+        add_action( 'template_redirect', array( __CLASS__, 'service_customized_css' ) );
+
+      }
+
+      /**
+       * Servce Custom CSS File
+       *
+       * @author potanin@UD
+       */
+      static function service_customized_css() {
+
+        // Somenbody beat us to it.
+        if( headers_sent() ) {
+          return;
+        }
+
+        // @todo I know this is ghetto.
+        if( $_SERVER[ 'REDIRECT_URL' ] === '/app-style.css' ) {
+
+          // WordPress will try to make it 404.
+          http_response_code( 200 );
+
+          // Set Some Headers.
+          header( 'Cache-Control: public' );
+          header( 'Content-Type: text/css' );
+          header( 'Expires: 0' );
+          header( 'Pragma: public' );
+
+          // Output CSS.
+          die( get_theme_mod( 'customized_css' ) );
+
+        }
+
+      }
+
+      /**
+       * Register Sections, Settings, Controls, etc.
+       *
+       * @author potanin@UD
+       * @param $wp_customize
+       */
+      static function register_style_customizer( $wp_customize ) {
+
+      $wp_customize->add_section( 'style_customizer', array(
+        'title'    => __( 'Style Editor' ),
+        'capability' => 'edit_theme_options',
+        'priority' => 10
+      ));
+
+      $wp_customize->add_setting( 'customized_css', array(
+        'default'    => '',
+        'type'       => 'theme_mod',
+        'capability' => 'edit_theme_options',
+        //'transport' => 'refresh' // postMessage
+      ));
+
+      $wp_customize->add_control( new UI\Style_Editor_Control( $wp_customize, 'style_customizer', array(
+        //'label'	=> __( 'Edit!', 'themename' ),
+        'section' => 'style_customizer',
+        'settings' => 'customized_css',
+      )));
+
+      // Make Setting Magical.
+      $wp_customize->get_setting( 'customized_css' )->transport = 'postMessage';
+
+    }
 
       /**
        * Removes 'quick edit' link on property type objects
@@ -494,8 +616,8 @@ namespace UsabilityDynamics {
        * Prints Property Atrributes Metabox
        * on Property Edit Page
        *
-       * @param object $object. Property
-       * @param array  $attrs. Metabox attributes
+       * @param object $object . Property
+       * @param array  $attrs . Metabox attributes
        */
       static function metabox_meta( $object, $attrs ) {
         global $wp_properties, $wpdb;
@@ -503,15 +625,15 @@ namespace UsabilityDynamics {
 
         $property            = WPP_F::get_property( $object->ID );
         $instance            = $attrs[ 'id' ];
-        $stats_group         = ( !empty( $attrs[ 'args' ][ 'group' ] ) ? $attrs[ 'args' ][ 'group' ] : false );
+        //$stats_group         = ( !empty( $attrs[ 'args' ][ 'group' ] ) ? $attrs[ 'args' ][ 'group' ] : false );
         $disabled_attributes = (array) $wp_properties[ '_geo_attributes' ];
         $property_stats      = (array) $wp_properties[ 'property_stats' ];
-        $stat_keys           = array_keys( $property_stats );
+        //$stat_keys           = array_keys( $property_stats );
         $this_property_type  = $property[ 'property_type' ];
 
         //* Set default property type */
         if( empty( $this_property_type ) && empty( $property[ 'post_name' ] ) ) {
-          $this_property_type = WPP_F::get_most_common_property_type();
+          //$this_property_type = WPP_F::get_most_common_property_type();
         }
 
         //** Check for current property type if it is deleted */

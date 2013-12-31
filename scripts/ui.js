@@ -1,5 +1,5 @@
 function UI() {
-  console.log( 'UI loaded' );
+  //console.log( 'UI loaded' );
   
 }
 
