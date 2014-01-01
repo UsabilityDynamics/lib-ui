@@ -35,13 +35,12 @@ namespace UsabilityDynamics {
 
       /**
        * Built-in Sections:
-       *
-       * title_tagline
-       * colors
-       * header_image
-       * background_image
-       * nav
-       * static_front_page
+       * - title_tagline
+       * - colors
+       * - header_image
+       * - background_image
+       * - nav
+       * - static_front_page
        *
        * add_section options
        * - capability
@@ -54,26 +53,26 @@ namespace UsabilityDynamics {
        * - type
        * - transport
        *
-       * @author potanin@UD
-       * @temp URL should be computed...
-       * @param $args
+       * @todo Implement better way of registering library scripts (ace.js, script-editor.js, etc.).
        *
+       * @param array $_atts
        * @return bool
-       *
+       * @internal param $args
+       * @author potanin@UD
        */
-      static function enable_style_customizer( $args = stdClass ) {
+      static function enable_style_customizer( $_atts = array()  ) {
 
-        $_args = (object) shortcode_atts( array(
+        $args = (object) shortcode_atts( array(
           'name'  => 'app-style',
           'deps'  => array(),
           'version' => '1.0'
-        ), $args );
+        ), $_atts );
 
-        wp_register_style( $_args->name, home_url() . '/app-style.css', $_args->deps, $_args->version );
+        wp_register_style( $args->name, home_url() . '/app-style.css', $args->deps, $args->version );
 
         wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
-        wp_register_script( 'style-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-editor.js', array( 'jquery', 'ace-editor' ), $_args->version, true );
-        wp_register_script( 'style-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-customizer.js', array( 'jquery', 'customize-preview' ), $_args->version, true );
+        wp_register_script( 'style-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-editor.js', array( 'jquery', 'ace-editor' ), $args->version, true );
+        wp_register_script( 'style-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-customizer.js', array( 'jquery', 'customize-preview' ), $args->version, true );
 
         // Customize Interface.
         add_action( 'customize_controls_print_scripts', function() {
@@ -98,20 +97,21 @@ namespace UsabilityDynamics {
       /**
        * Custom JavaScript
        *
+       * @todo Implement better way of registering library scripts (ace.js, script-editor.js, etc.).
        */
-      static function enable_script_customizer( $args = stdClass ) {
+      static function enable_script_customizer( $_atts = array() ) {
 
-        $_args = (object) shortcode_atts( array(
+        $args = (object) shortcode_atts( array(
           'name'  => 'app-script',
           'deps'  => array(),
           'version' => '1.0'
-        ), $args );
+        ), $_atts );
 
-        wp_register_script( $_args->name, home_url() . '/app-script.js', $_args->deps, $_args->version );
+        wp_register_script( $args->name, home_url() . '/app-script.js', $args->deps, $args->version );
 
         wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
-        wp_register_script( 'script-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-editor.js', array( 'jquery', 'ace-editor' ), $_args->version, true );
-        wp_register_script( 'script-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-customizer.js', array( 'jquery', 'customize-preview' ), $_args->version, true );
+        wp_register_script( 'script-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-editor.js', array( 'jquery', 'ace-editor' ), $args->version, true );
+        wp_register_script( 'script-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-customizer.js', array( 'jquery', 'customize-preview' ), $args->version, true );
 
         // Customize Interface.
         add_action( 'customize_controls_print_scripts', function() {
@@ -132,7 +132,7 @@ namespace UsabilityDynamics {
         // Handle Requests.
         add_action( 'template_redirect', array( __CLASS__, 'serve_custom_assets' ) );
 
-        // Serve in Script Footer.
+        // Serve Script in footer.
         add_action( 'wp_footer', function() {
 
           // Ensure configured to be in footer.
@@ -161,7 +161,7 @@ namespace UsabilityDynamics {
 
         // Load Last so we can have highest z-index
         $wp_customize->add_section( 'style-customizer', array(
-          'title'    => __( 'Style' ),
+          'title'    => __( 'Styles' ),
           'capability' => 'edit_theme_options',
           'priority' => 1000
         ));
