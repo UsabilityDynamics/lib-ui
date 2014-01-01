@@ -132,19 +132,22 @@ namespace UsabilityDynamics {
         // Handle Requests.
         add_action( 'template_redirect', array( __CLASS__, 'serve_custom_assets' ) );
 
-        // Serve in Footer.
+        // Serve in Script Footer.
         add_action( 'wp_footer', function() {
 
           // Ensure configured to be in footer.
-          if( get_theme_mod( 'custom-script-options' ) ) {}
+          if( get_theme_mod( 'custom-script-footer' ) ) {}
 
           // Minidfy if configured.
-          if( get_theme_mod( 'custom-script-options' ) ) {}
+          if( get_theme_mod( 'custom-script-minify' ) ) {}
+
+          // Set response headers based on cache setting.
+          if( get_theme_mod( 'custom-script-cache' ) ) {}
 
           // Output.
           echo '<script>' . get_theme_mod( 'custom-script' ) . '</script>';
 
-        });
+        }, 1000 );
 
       }
 
@@ -228,32 +231,72 @@ namespace UsabilityDynamics {
           'priority' => 1000
         ));
 
+        // Raw Script.
         $wp_customize->add_setting( 'custom-script', array(
           'type'       => 'theme_mod',
           'capability' => 'edit_theme_options',
           'transport' => 'postMessage'
         ));
 
-        $wp_customize->add_setting( 'custom-script-options', array(
+        // Render in Fotoer.
+        $wp_customize->add_setting( 'custom-script-footer', array(
+          'default'   => false,
           'type'       => 'theme_mod',
           'capability' => 'edit_theme_options',
           'transport' => 'postMessage'
         ));
 
-        $wp_customize->add_control( new UI\Script_Editor_Control( $wp_customize, 'script-customizer', array(
-          'section' => 'script-customizer',
-          'settings' => array( 'custom-script', 'custom-script-options' ),
-          'type' => 'checkbox',
-          'choices'        => array(
-            'minify'   => __( 'Minify' ),
-            'footer'   => __( 'In Footer' ),
-            'direct'  => __( 'As Route' )
-          )
+        // Minification Option.
+        $wp_customize->add_setting( 'custom-script-minify', array(
+          'default'       => false,
+          'type'          => 'theme_mod',
+          'capability'    => 'edit_theme_options',
+          'transport'     => 'postMessage'
+        ));
+
+        // Cache Result.
+        $wp_customize->add_setting( 'custom-script-cache', array(
+          'default'       => true,
+          'type'          => 'theme_mod',
+          'capability'    => 'edit_theme_options',
+          'transport'     => 'postMessage'
+        ));
+
+        // JavaScript Editor.
+        $wp_customize->add_control( new UI\Script_Editor_Control( $wp_customize, 'custom-script', array(
+            'label'   => __( 'JavaScript' ),
+            'section' => 'script-customizer'
         )));
 
-        // Make Setting Magical.
+        // No idea how this will be used.
+        $wp_customize->add_control( 'footer', array(
+          'label'   => __( 'Minify' ),
+          'settings' => 'custom-script-footer',
+          'section' => 'script-customizer',
+          'type'    => 'checkbox'
+        ));
+
+        // No idea how this will be used.
+        $wp_customize->add_control( 'minify', array(
+          'label'   => __( 'Minify' ),
+          'settings' => 'custom-script-minify',
+          'section' => 'script-customizer',
+          'type'    => 'checkbox'
+        ));
+
+        // No idea how this will be used.
+        $wp_customize->add_control( 'cache', array(
+          'label'   => __( 'Allow Caching' ),
+          'settings' => 'custom-script-cache',
+          'section' => 'script-customizer',
+          'type'    => 'checkbox'
+        ));
+
+        // Most of these don't actually need to be posted.
         $wp_customize->get_setting( 'custom-script' )->transport = 'postMessage';
-        $wp_customize->get_setting( 'custom-script-options' )->transport = 'postMessage';
+        $wp_customize->get_setting( 'custom-script-minify' )->transport = 'postMessage';
+        $wp_customize->get_setting( 'custom-script-footer' )->transport = 'postMessage';
+        $wp_customize->get_setting( 'custom-script-cache' )->transport = 'postMessage';
 
       }
 

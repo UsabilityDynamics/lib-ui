@@ -5,60 +5,29 @@
  *
  * @author potanin@ud
  */
-wp.customize( 'custom-javascript', function( css ) {
-  var intent;
+jQuery( document ).ready( function scriptCustomizer() {
 
-  /**
-   * Create Element for Hot Swapping Styles
-   *
-   */
-  function createStyleContainer() {
+  // Do Something Live...?
+  wp.customize( 'custom-script', function( script ) {
 
-    if( jQuery( '#udx-dynamic-styles' ) ) {
-      return;
-    }
+    // Listen for Changes.
+    script.bind( function scriptsChanged( script ) {
+      console.log( 'scriptsChanged', script );
+    });
 
-    // Create New Element and add to <head>
-    // jQuery( 'head' ).append( jQuery( '<style type="text/css" id="udx-dynamic-script"></style>' ) );
+  });
 
-  }
+  // Minify Script.
+  wp.customize( 'custom-script-minify', function( options ) {
+  });
 
-  /**
-   * Update Dynamic Styles
-   * 
-   * @param css
-   */
-  function updateStyles( css ) {
-    // console.log( 'updateStyles' );
+  // Cache Script.
+  wp.customize( 'custom-script-cache', function( options ) {
+  });
 
-    // Oue dynamically generated style element
-    // jQuery( 'head #udx-dynamic-styles' ).text( css );
-
-  }
-
-  /**
-   * Update Styles
-   * 
-   * @param css
-   */
-  function stylesChanged( css ) {
-    // console.log( 'stylesChanged', css );
-
-    // Clear Intent
-    window.clearTimeout( intent );
-
-    // Pause for Intent Check
-    intent = window.setTimeout( function() {
-      updateStyles( css );
-    }, 200 );
-
-  }
-
-  //createStyleContainer();
-  //stylesChanged( css );
-
-  // Listen for Changes.
-  //css.bind( stylesChanged );
+  // Show in Footer.
+  wp.customize( 'custom-script-footer', function( options ) {
+  });
 
 });
 
