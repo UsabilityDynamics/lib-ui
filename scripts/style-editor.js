@@ -40,6 +40,3 @@ jQuery( document ).ready( function styleEditor() {
   });
 
 });
-
-// jQuery( '.wp-full-overlay.expanded' ).animate({ marginLeft: "400px" });
-// jQuery( '.wp-full-overlay.expanded #customize-controls' ).animate({ width: "400px" });
