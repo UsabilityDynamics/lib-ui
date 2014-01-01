@@ -25,7 +25,9 @@ namespace UsabilityDynamics\UI {
 
       echo join( '', [
         '<div id="udx-style-editor-wrapper"></div>',
-        '<textarea id="udx-style-editor" style="display: none;" ', $this->get_link(), '>',
+        '<textarea id="udx-style-editor" style="display: none;" ',
+        $this->get_link(),
+        '>',
         esc_textarea( $this->value() ),
         '</textarea>',
 

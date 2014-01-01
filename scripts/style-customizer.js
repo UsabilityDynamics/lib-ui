@@ -5,60 +5,67 @@
  *
  * @author potanin@ud
  */
-wp.customize( 'customized_css', function( css ) {
-  var intent;
+jQuery( document ).ready( function styleCustomizer() {
 
   /**
    * Create Element for Hot Swapping Styles
    *
    */
   function createStyleContainer() {
+    console.log( 'createStyleContainer' );
 
-    if( jQuery( '#udx-dynamic-styles' ) ) {
+    if( jQuery( '#udx-style-preview-container' ).length ) {
       return;
     }
 
+    var _element = jQuery( '<style type="text/css" id="udx-style-preview-container"></style>' );
+
     // Create New Element and add to <head>
-    jQuery( 'head' ).append( jQuery( '<style type="text/css" id="udx-dynamic-styles"></style>' ) );
+    jQuery( 'head' ).append( _element );
+
+    // console.log( '_element', _element );
 
   }
 
   /**
    * Update Dynamic Styles
-   * 
-   * @param css
+   *
+   * @param style
    */
-  function updateStyles( css ) {
-    // console.log( 'updateStyles' );
+  function updateStyles( style ) {
+    console.log( 'updateStyles', style );
 
     // Oue dynamically generated style element
-    jQuery( 'head #udx-dynamic-styles' ).text( css );
+    jQuery( 'head #udx-style-preview-container' ).text( style );
 
   }
 
-  /**
-   * Update Styles
-   * 
-   * @param css
-   */
-  function stylesChanged( css ) {
-    // console.log( 'stylesChanged', css );
+  // Update Styles Live.
+  wp.customize( 'custom-style', function( style ) {
+    var intent;
 
-    // Clear Intent
-    window.clearTimeout( intent );
+    createStyleContainer();
 
-    // Pause for Intent Check
-    intent = window.setTimeout( function() {
-      updateStyles( css );
-    }, 200 );
+    // Listen for Changes.
+    style.bind( function stylesChanged( style ) {
+      console.log( 'stylesChanged', style );
 
-  }
+      // Clear Intent
+      window.clearTimeout( intent );
 
-  createStyleContainer();
-  stylesChanged( css );
+      // Pause for Intent Check
+      intent = window.setTimeout( function() {
+        updateStyles( style );
+      }, 100 );
+
+    });
+
+  });
 
   // Listen for Changes.
-  css.bind( stylesChanged );
+  wp.customize( 'custom-style-minify', function( options ) {
+    // options.bind( minificationOptionChanged );
+  });
 
 });
 

@@ -23,11 +23,11 @@
 
   var editor = ace.edit( "udx-script-editor-wrapper" );
 
-  editor.setTheme( "ace/theme/idleFingers" );
+  editor.setTheme( "ace/theme/dawn" );
   //editor.setTheme( "ace/theme/dawn" );
   //editor.setTheme( "ace/theme/monokai" );
 
-  editor.getSession().setMode( "ace/mode/css" );
+  editor.getSession().setMode( "ace/mode/javascript" );
   editor.getSession().setUseSoftTabs( true );
 
   editor.setHighlightActiveLine( false );

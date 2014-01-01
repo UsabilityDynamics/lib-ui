@@ -54,11 +54,11 @@ wp.customize( 'custom-javascript', function( css ) {
 
   }
 
-  createStyleContainer();
-  stylesChanged( css );
+  //createStyleContainer();
+  //stylesChanged( css );
 
   // Listen for Changes.
-  css.bind( stylesChanged );
+  //css.bind( stylesChanged );
 
 });
 

@@ -31,7 +31,7 @@ namespace UsabilityDynamics {
        * @property $version
        * @type {Object}
        */
-      public static $version = '0.1.3';
+      public static $version = '0.2.0';
 
       /**
        * Built-in Sections:
@@ -71,9 +71,9 @@ namespace UsabilityDynamics {
 
         wp_register_style( $_args->name, home_url() . '/app-style.css', $_args->deps, $_args->version );
 
-        wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/vendor/udx/ace/src-noconflict/ace.js', array(), '1.1.01', true );
+        wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
         wp_register_script( 'style-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-editor.js', array( 'jquery', 'ace-editor' ), $_args->version, true );
-        wp_register_script( 'style_customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-customizer.js', array( 'jquery', 'customize-preview' ), $_args->version, true );
+        wp_register_script( 'style-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-customizer.js', array( 'jquery', 'customize-preview' ), $_args->version, true );
 
         // Customize Interface.
         add_action( 'customize_controls_print_scripts', function() {
@@ -83,7 +83,7 @@ namespace UsabilityDynamics {
 
         // Enable JavaScript in Customize Preview
         add_action( 'customize_preview_init', function() {
-          wp_enqueue_script( 'style_customizer' );
+          wp_enqueue_script( 'style-customizer' );
         });
 
         if( !did_action( 'customize_register' ) ) {
@@ -107,9 +107,9 @@ namespace UsabilityDynamics {
           'version' => '1.0'
         ), $args );
 
-        wp_register_style( $_args->name, home_url() . '/app-script.js', $_args->deps, $_args->version );
+        wp_register_script( $_args->name, home_url() . '/app-script.js', $_args->deps, $_args->version );
 
-        wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/vendor/udx/ace/src-noconflict/ace.js', array(), '1.1.01', true );
+        wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
         wp_register_script( 'script-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-editor.js', array( 'jquery', 'ace-editor' ), $_args->version, true );
         wp_register_script( 'script-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-customizer.js', array( 'jquery', 'customize-preview' ), $_args->version, true );
 
@@ -124,12 +124,136 @@ namespace UsabilityDynamics {
           wp_enqueue_script( 'script-customizer' );
         });
 
+        // Register Customization.
         if( !did_action( 'customize_register' ) ) {
           add_action( 'customize_register', array( __CLASS__, 'register_script_customizer' ) );
         }
 
         // Handle Requests.
         add_action( 'template_redirect', array( __CLASS__, 'serve_custom_assets' ) );
+
+        // Serve in Footer.
+        add_action( 'wp_footer', function() {
+
+          // Ensure configured to be in footer.
+          if( get_theme_mod( 'custom-script-options' ) ) {}
+
+          // Minidfy if configured.
+          if( get_theme_mod( 'custom-script-options' ) ) {}
+
+          // Output.
+          echo '<script>' . get_theme_mod( 'custom-script' ) . '</script>';
+
+        });
+
+      }
+
+      /**
+       * Register Sections, Settings, Controls, etc.
+       *
+       * @author potanin@UD
+       * @param $wp_customize
+       */
+      static function register_style_customizer( $wp_customize ) {
+
+        // Load Last so we can have highest z-index
+        $wp_customize->add_section( 'style-customizer', array(
+          'title'    => __( 'Style' ),
+          'capability' => 'edit_theme_options',
+          'priority' => 1000
+        ));
+
+        // Stores raw CSS.
+        $wp_customize->add_setting( 'custom-style', array(
+          'type'       => 'theme_mod',
+          'capability' => 'edit_theme_options',
+          'transport' => 'postMessage'
+        ));
+
+        // Minification Option.
+        $wp_customize->add_setting( 'custom-style-minify', array(
+          'default'       => false,
+          'type'          => 'theme_mod',
+          'capability'    => 'edit_theme_options',
+          'transport'     => 'postMessage'
+        ));
+
+        // Caching Option.
+        $wp_customize->add_setting( 'custom-style-cache', array(
+          'default'       => true,
+          'type'          => 'theme_mod',
+          'capability'    => 'edit_theme_options',
+          'transport'     => 'postMessage'
+        ));
+
+        // Input for CSS Code.
+        $wp_customize->add_control( new UI\Style_Editor_Control( $wp_customize, 'custom-style', array(
+          'label'   => __( 'CSS' ),
+          'section' => 'style-customizer'
+        )));
+
+        // No idea how this will be used.
+        $wp_customize->add_control( 'minify', array(
+          'label'   => __( 'Minify' ),
+          'settings' => 'custom-style-minify',
+          'section' => 'style-customizer',
+          'type'    => 'checkbox'
+        ));
+
+        // No idea how this will be used.
+        $wp_customize->add_control( 'cache', array(
+          'label'   => __( 'Allow Caching' ),
+          'settings' => 'custom-style-cache',
+          'section' => 'style-customizer',
+          'type'    => 'checkbox'
+        ));
+
+        // Make Setting Magical.
+        $wp_customize->get_setting( 'custom-style' )->transport = 'postMessage';
+        $wp_customize->get_setting( 'custom-style-minify' )->transport = 'postMessage';
+        $wp_customize->get_setting( 'custom-style-cache' )->transport = 'postMessage';
+
+      }
+
+      /**
+       * Register Script Customizer
+       *
+       */
+      static function register_script_customizer( $wp_customize ) {
+
+        // Load Last so we can have highest z-index
+        $wp_customize->add_section( 'script-customizer', array(
+          'title'    => __( 'Script' ),
+          'capability' => 'edit_theme_options',
+          'priority' => 1000
+        ));
+
+        $wp_customize->add_setting( 'custom-script', array(
+          'type'       => 'theme_mod',
+          'capability' => 'edit_theme_options',
+          'transport' => 'postMessage'
+        ));
+
+        $wp_customize->add_setting( 'custom-script-options', array(
+          'type'       => 'theme_mod',
+          'capability' => 'edit_theme_options',
+          'transport' => 'postMessage'
+        ));
+
+        $wp_customize->add_control( new UI\Script_Editor_Control( $wp_customize, 'script-customizer', array(
+          'section' => 'script-customizer',
+          'settings' => array( 'custom-script', 'custom-script-options' ),
+          'type' => 'checkbox',
+          'choices'        => array(
+            'minify'   => __( 'Minify' ),
+            'footer'   => __( 'In Footer' ),
+            'direct'  => __( 'As Route' )
+          )
+        )));
+
+        // Make Setting Magical.
+        $wp_customize->get_setting( 'custom-script' )->transport = 'postMessage';
+        $wp_customize->get_setting( 'custom-script-options' )->transport = 'postMessage';
 
       }
 
@@ -161,7 +285,7 @@ namespace UsabilityDynamics {
           header( 'Pragma: public' );
 
           // Output CSS.
-          die( get_theme_mod( 'customized_css' ) );
+          die( get_theme_mod( 'custom-style' ) );
 
         }
 
@@ -175,7 +299,7 @@ namespace UsabilityDynamics {
 
           // Set Some Headers.
           header( 'Cache-Control: public' );
-          header( 'Content-Type: text/js' );
+          header( 'Content-Type: application/javascript' );
           header( 'Expires: 0' );
           header( 'Pragma: public' );
 
@@ -183,69 +307,6 @@ namespace UsabilityDynamics {
           die( get_theme_mod( 'custom-script' ) );
 
         }
-      }
-
-      /**
-       * Register Sections, Settings, Controls, etc.
-       *
-       * @author potanin@UD
-       * @param $wp_customize
-       */
-      static function register_style_customizer( $wp_customize ) {
-
-        // Load Last so we can have highest z-index
-        $wp_customize->add_section( 'style_customizer', array(
-          'title'    => __( 'Style Editor' ),
-          'capability' => 'edit_theme_options',
-          'priority' => 1000
-        ));
-
-        $wp_customize->add_setting( 'customized_css', array(
-          'default'    => '',
-          'type'       => 'theme_mod',
-          'capability' => 'edit_theme_options',
-          'transport' => 'postMessage' // postMessage
-        ));
-
-        $wp_customize->add_control( new UI\Style_Editor_Control( $wp_customize, 'style_customizer', array(
-          //'label'	=> __( 'Edit!', 'themename' ),
-          'section' => 'style_customizer',
-          'settings' => 'customized_css',
-        )));
-
-        // Make Setting Magical.
-        $wp_customize->get_setting( 'customized_css' )->transport = 'postMessage';
-
-      }
-
-      /**
-       * Register Script Customizer
-       *
-       */
-      static function register_script_customizer( $wp_customize ) {
-
-        // Load Last so we can have highest z-index
-        $wp_customize->add_section( 'script-customizer', array(
-          'title'    => __( 'Script Editor' ),
-          'capability' => 'edit_theme_options',
-          'priority' => 1000
-        ));
-
-        $wp_customize->add_setting( 'custom-script', array(
-          'default'    => '',
-          'type'       => 'theme_mod',
-          'capability' => 'edit_theme_options',
-          'transport' => 'postMessage'
-        ));
-
-        $wp_customize->add_control( new UI\Script_Editor_Control( $wp_customize, 'script-customizer', array(
-          'section' => 'script-customizer',
-          'settings' => 'custom-script',
-        )));
-
-        // Make Setting Magical.
-        $wp_customize->get_setting( 'custom-script' )->transport = 'postMessage';
-
       }
 
       /**
