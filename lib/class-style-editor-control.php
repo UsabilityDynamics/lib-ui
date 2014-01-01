@@ -24,7 +24,7 @@ namespace UsabilityDynamics\UI {
     public function render_content() {
 
       echo join( '', [
-        '<div id="udx-style-editor-wrapper"></div>',
+        '<div id="udx-style-editor-wrapper" class="udx-customization-editor"></div>',
         '<textarea id="udx-style-editor" style="display: none;" ',
         $this->get_link(),
         '>',
