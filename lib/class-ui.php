@@ -70,9 +70,13 @@ namespace UsabilityDynamics {
 
         wp_register_style( $args->name, home_url() . '/app-style.css', $args->deps, $args->version );
 
+        // @debug
+        // wp_enqueue_style( 'asdfsdfa', 'http://cdn.usabilitydynamics.com/js/ace/1.0.0/theme/textmate.css' );
+        // wp_enqueue_style( 'edasdfa', 'http://cdn.usabilitydynamics.com/js/ace/1.0.0/css/editor.css' );
+
         //wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
-        wp_register_script( 'style-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-editor.min.js', array( 'jquery', 'ace-editor' ), $args->version, true );
-        wp_register_script( 'style-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-customizer.min.js', array( 'jquery', 'customize-preview' ), $args->version, true );
+        //wp_register_script( 'style-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-editor.min.js', array( 'jquery', 'ace-editor' ), $args->version, true );
+        //wp_register_script( 'style-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-customizer.min.js', array( 'jquery', 'customize-preview' ), $args->version, true );
 
         // Customize Interface.
         add_action( 'customize_controls_print_scripts', function() {
@@ -110,8 +114,8 @@ namespace UsabilityDynamics {
         wp_register_script( $args->name, home_url() . '/app-script.js', $args->deps, $args->version );
 
         //wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
-        wp_register_script( 'script-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-editor.min.js', array( 'jquery', 'ace-editor' ), $args->version, true );
-        wp_register_script( 'script-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-customizer.min.js', array( 'jquery', 'customize-preview' ), $args->version, true );
+        //wp_register_script( 'script-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-editor.min.js', array( 'jquery', 'ace-editor' ), $args->version, true );
+        //wp_register_script( 'script-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-customizer.min.js', array( 'jquery', 'customize-preview' ), $args->version, true );
 
         // Customize Interface.
         add_action( 'customize_controls_print_scripts', function() {

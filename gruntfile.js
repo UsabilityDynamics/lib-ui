@@ -102,12 +102,12 @@ module.exports = function( grunt ) {
           wrap: false
         },
         files: {
-          'scripts/markdown.min.js': [ 'scripts/src/markdown.js'],
-          'scripts/script-customizer.min.js': [ 'scripts/src/script-customizer.js'],
-          'scripts/script-editor.min.js': [ 'scripts/src/script-editor.js'],
-          'scripts/style-editor.min.js': [ 'scripts/src/style-editor.js'],
-          'scripts/style-customizer.min.js': [ 'scripts/src/style-customizer.js'],
-          'scripts/ui.min.js': [ 'scripts/src/ui.js']
+          // @note There is no point simply minifying require.js files.
+          //'scripts/ui.markdown.js': [ 'scripts/src/ui.markdown.js'],
+          //'scripts/script-customizer.min.js': [ 'scripts/src/script-customizer.js'],
+          //'scripts/script-editor.min.js': [ 'scripts/src/script-editor.js'],
+          //'scripts/style-editor.min.js': [ 'scripts/src/style-editor.js'],
+          //'scripts/style-customizer.min.js': [ 'scripts/src/style-customizer.js']
         }
       }
     },

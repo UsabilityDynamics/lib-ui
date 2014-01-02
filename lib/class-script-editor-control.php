@@ -24,8 +24,10 @@ namespace UsabilityDynamics\UI {
     public function render_content() {
 
       echo join( '', [
-        '<div id="udx-script-editor-wrapper" class="udx-customization-editor"></div>',
-        '<textarea id="udx-script-editor" style="" ', $this->get_link(), '>',
+        '<div id="udx-script-editor-wrapper" class="udx-customization-editor" data-require="ui.wp.editor.script"></div>',
+        '<textarea id="udx-script-editor" rows="15" style="width:100%;" ',
+        $this->get_link(),
+        '>',
         esc_textarea( $this->value() ),
         '</textarea>',
 
