@@ -8,8 +8,7 @@
     "script-editor"
   ],
   "require": {
-    "udx/ace": "*",
-    "usabilitydynamics/lib-utility": "*"
+    "usabilitydynamics/lib-utility": "master"
   },
   "minimum-stability": "dev",
   "repositories": [

@@ -70,9 +70,9 @@ namespace UsabilityDynamics {
 
         wp_register_style( $args->name, home_url() . '/app-style.css', $args->deps, $args->version );
 
-        wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
-        wp_register_script( 'style-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-editor.js', array( 'jquery', 'ace-editor' ), $args->version, true );
-        wp_register_script( 'style-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-customizer.js', array( 'jquery', 'customize-preview' ), $args->version, true );
+        //wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
+        wp_register_script( 'style-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-editor.min.js', array( 'jquery', 'ace-editor' ), $args->version, true );
+        wp_register_script( 'style-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-customizer.min.js', array( 'jquery', 'customize-preview' ), $args->version, true );
 
         // Customize Interface.
         add_action( 'customize_controls_print_scripts', function() {
@@ -109,9 +109,9 @@ namespace UsabilityDynamics {
 
         wp_register_script( $args->name, home_url() . '/app-script.js', $args->deps, $args->version );
 
-        wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
-        wp_register_script( 'script-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-editor.js', array( 'jquery', 'ace-editor' ), $args->version, true );
-        wp_register_script( 'script-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-customizer.js', array( 'jquery', 'customize-preview' ), $args->version, true );
+        //wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
+        wp_register_script( 'script-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-editor.min.js', array( 'jquery', 'ace-editor' ), $args->version, true );
+        wp_register_script( 'script-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-customizer.min.js', array( 'jquery', 'customize-preview' ), $args->version, true );
 
         // Customize Interface.
         add_action( 'customize_controls_print_scripts', function() {
@@ -159,11 +159,12 @@ namespace UsabilityDynamics {
        */
       static function register_style_customizer( $wp_customize ) {
 
-        // Load Last so we can have highest z-index
+        // Configure Section.
         $wp_customize->add_section( 'style-customizer', array(
-          'title'    => __( 'Styles' ),
+          'title'    => __( 'Theme Styles' ),
+          'description' => __( 'Handle custom CSS styles that will be loaded after all other styles.' ),
           'capability' => 'edit_theme_options',
-          'priority' => 1000
+          'priority' => -20
         ));
 
         // Stores raw CSS.
@@ -192,23 +193,26 @@ namespace UsabilityDynamics {
         // Input for CSS Code.
         $wp_customize->add_control( new UI\Style_Editor_Control( $wp_customize, 'custom-style', array(
           'label'   => __( 'CSS' ),
-          'section' => 'style-customizer'
+          'section' => 'style-customizer',
+          'priority' => 10
         )));
 
-        // No idea how this will be used.
-        $wp_customize->add_control( 'minify', array(
-          'label'   => __( 'Minify' ),
+        // Basic Checkbox.
+        $wp_customize->add_control( 'custom-style-minify', array(
+          'label'   => __( 'Minify Output' ),
           'settings' => 'custom-style-minify',
           'section' => 'style-customizer',
-          'type'    => 'checkbox'
+          'type'    => 'checkbox',
+          'priority' => 20
         ));
 
-        // No idea how this will be used.
-        $wp_customize->add_control( 'cache', array(
+        // Basic Checkbox.
+        $wp_customize->add_control( 'custom-style-cache', array(
           'label'   => __( 'Allow Caching' ),
           'settings' => 'custom-style-cache',
           'section' => 'style-customizer',
-          'type'    => 'checkbox'
+          'type'    => 'checkbox',
+          'priority' => 30
         ));
 
         // Make Setting Magical.
@@ -224,11 +228,12 @@ namespace UsabilityDynamics {
        */
       static function register_script_customizer( $wp_customize ) {
 
-        // Load Last so we can have highest z-index
+        // Configure Section.
         $wp_customize->add_section( 'script-customizer', array(
-          'title'    => __( 'Script' ),
+          'title'    => __( 'Theme Scripts' ),
+          'description' => __( 'Handle custom JavaScript that may be included in footers or stand-alone.' ),
           'capability' => 'edit_theme_options',
-          'priority' => 1000
+          'priority' => -10
         ));
 
         // Raw Script.
@@ -265,31 +270,36 @@ namespace UsabilityDynamics {
         // JavaScript Editor.
         $wp_customize->add_control( new UI\Script_Editor_Control( $wp_customize, 'custom-script', array(
             'label'   => __( 'JavaScript' ),
-            'section' => 'script-customizer'
+            'section' => 'script-customizer',
+            'priority' => 10
         )));
 
         // No idea how this will be used.
-        $wp_customize->add_control( 'footer', array(
-          'label'   => __( 'Minify' ),
+        $wp_customize->add_control( 'custom-script-footer', array(
+          'label'   => __( 'Use in Footer' ),
           'settings' => 'custom-script-footer',
           'section' => 'script-customizer',
-          'type'    => 'checkbox'
+          'type'    => 'checkbox',
+          'priority' => 20
         ));
 
         // No idea how this will be used.
-        $wp_customize->add_control( 'minify', array(
-          'label'   => __( 'Minify' ),
+        $wp_customize->add_control( 'custom-script-minify', array(
+          'label'   => __( 'Minify Output' ),
           'settings' => 'custom-script-minify',
           'section' => 'script-customizer',
-          'type'    => 'checkbox'
+          'type'    => 'checkbox',
+          'priority' => 30
+
         ));
 
         // No idea how this will be used.
-        $wp_customize->add_control( 'cache', array(
+        $wp_customize->add_control( 'custom-script-cache', array(
           'label'   => __( 'Allow Caching' ),
           'settings' => 'custom-script-cache',
           'section' => 'script-customizer',
-          'type'    => 'checkbox'
+          'type'    => 'checkbox',
+          'priority' => 40
         ));
 
         // Most of these don't actually need to be posted.

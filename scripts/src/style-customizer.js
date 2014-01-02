@@ -10,9 +10,10 @@ jQuery( document ).ready( function styleCustomizer() {
   /**
    * Create Element for Hot Swapping Styles
    *
+   * @todo Remove actual <link> to app-style.css while editing in preview mode.
    */
   function createStyleContainer() {
-    console.log( 'createStyleContainer' );
+    // console.log( 'createStyleContainer' );
 
     if( jQuery( '#udx-style-preview-container' ).length ) {
       return;
@@ -33,7 +34,7 @@ jQuery( document ).ready( function styleCustomizer() {
    * @param style
    */
   function updateStyles( style ) {
-    console.log( 'updateStyles', style );
+    // console.log( 'updateStyles', style );
 
     // Oue dynamically generated style element
     jQuery( 'head #udx-style-preview-container' ).text( style );
@@ -48,7 +49,7 @@ jQuery( document ).ready( function styleCustomizer() {
 
     // Listen for Changes.
     style.bind( function stylesChanged( style ) {
-      console.log( 'stylesChanged', style );
+      // console.log( 'stylesChanged', style );
 
       // Clear Intent
       window.clearTimeout( intent );
@@ -56,7 +57,7 @@ jQuery( document ).ready( function styleCustomizer() {
       // Pause for Intent Check
       intent = window.setTimeout( function() {
         updateStyles( style );
-      }, 100 );
+      }, 200 );
 
     });
 
