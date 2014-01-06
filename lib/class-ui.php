@@ -75,7 +75,7 @@ namespace UsabilityDynamics {
         });
 
         // Enable JavaScript Library Loading.
-        new \UsabilityDynamics\Requires( array(
+        /* new \UsabilityDynamics\Requires( array(
           'name' => 'ui.editor',
           'scope' => [ 'backend' ],
           'debug' => true
@@ -85,7 +85,7 @@ namespace UsabilityDynamics {
           'name' => 'ui.customizer',
           'scope' => [ 'customizer' ],
           'debug' => true
-        ));
+        )); */
 
         if( !did_action( 'customize_register' ) ) {
           add_action( 'customize_register', array( __CLASS__, 'register_style_customizer' ) );
