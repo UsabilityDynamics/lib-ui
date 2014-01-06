@@ -68,7 +68,7 @@ namespace UsabilityDynamics {
           'version' => '1.0'
         ), $_atts );
 
-        wp_register_style( $args->name, home_url() . '/app-style.css', $args->deps, $args->version );
+        //wp_register_style( $args->name, home_url() . '/app-style.css', $args->deps, $args->version );
 
         // @debug
         // wp_enqueue_style( 'asdfsdfa', 'http://cdn.usabilitydynamics.com/js/ace/1.0.0/theme/textmate.css' );
@@ -80,13 +80,13 @@ namespace UsabilityDynamics {
 
         // Customize Interface.
         add_action( 'customize_controls_print_scripts', function() {
-          wp_enqueue_script( 'ace-editor' );
-          wp_enqueue_script( 'style-editor' );
+          //wp_enqueue_script( 'ace-editor' );
+          //wp_enqueue_script( 'style-editor' );
         });
 
         // Enable JavaScript in Customize Preview
         add_action( 'customize_preview_init', function() {
-          wp_enqueue_script( 'style-customizer' );
+          //wp_enqueue_script( 'style-customizer' );
         });
 
         if( !did_action( 'customize_register' ) ) {
@@ -111,7 +111,7 @@ namespace UsabilityDynamics {
           'version' => '1.0'
         ), $_atts );
 
-        wp_register_script( $args->name, home_url() . '/app-script.js', $args->deps, $args->version );
+        //wp_register_script( $args->name, home_url() . '/app-script.js', $args->deps, $args->version );
 
         //wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
         //wp_register_script( 'script-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-editor.min.js', array( 'jquery', 'ace-editor' ), $args->version, true );
@@ -119,13 +119,13 @@ namespace UsabilityDynamics {
 
         // Customize Interface.
         add_action( 'customize_controls_print_scripts', function() {
-          wp_enqueue_script( 'ace-editor' );
-          wp_enqueue_script( 'script-editor' );
+          //wp_enqueue_script( 'ace-editor' );
+          //wp_enqueue_script( 'script-editor' );
         });
 
         // Enable JavaScript in Customize Preview
         add_action( 'customize_preview_init', function() {
-          wp_enqueue_script( 'script-customizer' );
+          //wp_enqueue_script( 'script-customizer' );
         });
 
         // Register Customization.
@@ -328,7 +328,7 @@ namespace UsabilityDynamics {
         }
 
         // Serve CSS.
-        if( $_SERVER[ 'REDIRECT_URL' ] === '/app-style.css' ) {
+        if( isset( $_SERVER[ 'REDIRECT_URL' ] ) && $_SERVER[ 'REDIRECT_URL' ] === '/app-style.css' ) {
 
           do_action( 'serve_custom_assets' );
 
@@ -347,7 +347,7 @@ namespace UsabilityDynamics {
         }
 
         // Serve JavaScript.
-        if( $_SERVER[ 'REDIRECT_URL' ] === '/app-script.js' ) {
+        if( isset( $_SERVER[ 'REDIRECT_URL' ] ) && $_SERVER[ 'REDIRECT_URL' ] === '/app-script.js' ) {
 
           // do_action( 'serve_custom_assets' );
 
