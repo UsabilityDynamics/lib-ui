@@ -64,33 +64,28 @@ namespace UsabilityDynamics {
       static function enable_style_customizer( $_atts = array()  ) {
 
         $args = (object) shortcode_atts( array(
-          'name'  => 'app-style',
+          'name'  => 'app.style',
           'deps'  => array(),
           'version' => '1.0'
         ), $_atts );
 
         // Enqueue Frontend Style.
         add_action( 'wp_enqueue_scripts', function() {
-          wp_register_style( 'app-style', home_url() . '/app-style.css', array(), 1.0 );
+          wp_register_style( 'app.style', home_url() . '/app.style.css', array(), 1.0 );
         });
 
-        // Enqueue Admin Scripts.
-        add_action( 'admin_enqueue_scripts', function() {
-          wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
-          wp_register_script( 'style-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-editor.min.js', array( 'jquery', 'ace-editor' ), 1.0, true );
-          wp_register_script( 'style-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-customizer.min.js', array( 'jquery', 'customize-preview' ), 1.0, true );
-        });
-
-        // Customize Interface.
-        add_action( 'customize_controls_print_scripts', function() {
-          wp_enqueue_script( 'ace-editor' );
-          wp_enqueue_script( 'style-editor' );
-        });
-
-        // Enable JavaScript in Customize Preview
-        add_action( 'customize_preview_init', function() {
-          wp_enqueue_script( 'style-customizer' );
-        });
+        // Enable JavaScript Library Loading.
+        new \UsabilityDynamics\Requires( array(
+          'name' => 'ui.editor',
+          'scope' => [ 'backend' ],
+          'debug' => true
+        ));
+        // Enable JavaScript Library Loading.
+        new \UsabilityDynamics\Requires( array(
+          'name' => 'ui.customizer',
+          'scope' => [ 'customizer' ],
+          'debug' => true
+        ));
 
         if( !did_action( 'customize_register' ) ) {
           add_action( 'customize_register', array( __CLASS__, 'register_style_customizer' ) );
@@ -111,32 +106,14 @@ namespace UsabilityDynamics {
       static function enable_script_customizer( $_atts = array() ) {
 
         $args = (object) shortcode_atts( array(
-          'name'  => 'app-script',
+          'name'  => 'app.script',
           'deps'  => array(),
           'version' => '1.0'
         ), $_atts );
 
         // Enqueue Frtonend Script.
         add_action( 'wp_enqueue_scripts', function() {
-          wp_register_style( 'app-script', home_url() . '/app-script.js', array(), 1.0 );
-        });
-
-        // Enqueue Admin Scripts.
-        add_action( 'admin_enqueue_scripts', function() {
-          wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
-          wp_register_script( 'script-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-editor.min.js', array( 'jquery', 'ace-editor' ), 1.0, true );
-          wp_register_script( 'script-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-customizer.min.js', array( 'jquery', 'customize-preview' ), 1.0, true );
-        });
-
-        // Customize Interface.
-        add_action( 'customize_controls_print_scripts', function() {
-          wp_enqueue_script( 'ace-editor' );
-          wp_enqueue_script( 'script-editor' );
-        });
-
-        // Enable JavaScript in Customize Preview
-        add_action( 'customize_preview_init', function() {
-         wp_enqueue_script( 'script-customizer' );
+          wp_register_script( 'app.script', home_url() . '/app.script.js', array(), 1.0 );
         });
 
         // Register Customization.
@@ -339,7 +316,7 @@ namespace UsabilityDynamics {
         }
 
         // Serve CSS.
-        if( isset( $_SERVER[ 'REDIRECT_URL' ] ) && $_SERVER[ 'REDIRECT_URL' ] === '/app-style.css' ) {
+        if( isset( $_SERVER[ 'REDIRECT_URL' ] ) && $_SERVER[ 'REDIRECT_URL' ] === '/app.style.css' ) {
 
           do_action( 'serve_custom_assets' );
 
@@ -358,7 +335,7 @@ namespace UsabilityDynamics {
         }
 
         // Serve JavaScript.
-        if( isset( $_SERVER[ 'REDIRECT_URL' ] ) && $_SERVER[ 'REDIRECT_URL' ] === '/app-script.js' ) {
+        if( isset( $_SERVER[ 'REDIRECT_URL' ] ) && $_SERVER[ 'REDIRECT_URL' ] === '/app.script.js' ) {
 
           // do_action( 'serve_custom_assets' );
 
@@ -375,6 +352,7 @@ namespace UsabilityDynamics {
           die( get_theme_mod( 'custom-script' ) );
 
         }
+
       }
 
       /**
