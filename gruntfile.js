@@ -1,5 +1,5 @@
 /**
- * Build Component
+ * Build Library.
  *
  * @author potanin@UD
  * @param grunt
@@ -19,17 +19,18 @@ module.exports = function( grunt ) {
           relativeUrls: true
         },
         files: {
-          'styles/ui.min.css': [ 'styles/src/ui.less' ],
-          'styles/markdown.min.css': [ 'styles/src/markdown.less' ]
+          'styles/ui.css': [ 'styles/src/ui.less' ],
+          'styles/ui.markdown.css': [ 'styles/src/ui.markdown.less' ]
         }
       },
       development: {
         options: {
+          yuicompress: false,
           relativeUrls: true
         },
         files: {
-          'styles/ui.css': [ 'styles/src/ui.less' ],
-          'styles/markdown.css': [ 'styles/src/markdown.less' ]
+          'styles/ui.dev.css': [ 'styles/src/ui.less' ],
+          'styles/ui.markdown.dev.css': [ 'styles/src/ui.markdown.less' ]
         }
       }
     },
@@ -96,18 +97,17 @@ module.exports = function( grunt ) {
 
     // Minify all JS Files.
     uglify: {
-      minified: {
+      production: {
         options: {
           preserveComments: false,
           wrap: false
         },
         files: {
-          // @note There is no point simply minifying require.js files.
-          //'scripts/ui.markdown.js': [ 'scripts/src/ui.markdown.js'],
-          //'scripts/script-customizer.min.js': [ 'scripts/src/script-customizer.js'],
-          //'scripts/script-editor.min.js': [ 'scripts/src/script-editor.js'],
-          //'scripts/style-editor.min.js': [ 'scripts/src/style-editor.js'],
-          //'scripts/style-customizer.min.js': [ 'scripts/src/style-customizer.js']
+          'scripts/ui.markdown.js': [ 'scripts/src/ui.markdown.js' ],
+          'scripts/ui.wp.editor.style.js': [ 'scripts/src/ui.wp.editor.style.js' ],
+          'scripts/ui.wp.editor.script.js': [ 'scripts/src/ui.wp.editor.script.js' ],
+          'scripts/ui.wp.customizer.script.js': [ 'scripts/src/ui.wp.customizer.script.js'],
+          'scripts/ui.wp.customizer.style.js': [ 'scripts/src/ui.wp.customizer.style.js']
         }
       }
     },
@@ -142,7 +142,7 @@ module.exports = function( grunt ) {
 
   });
 
-  // Load tasks
+  // Load NPM Tasks.
   grunt.loadNpmTasks( 'grunt-markdown' );
   grunt.loadNpmTasks( 'grunt-mocha-cli' );
   grunt.loadNpmTasks( 'grunt-requirejs' );
@@ -158,7 +158,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'default', [ 'markdown', 'less', 'uglify', 'yuidoc' ] );
 
   // Build for Distribution.
-  grunt.registerTask( 'distribution', [ 'markdown', 'less', 'uglify', 'yuidoc' ] );
+  grunt.registerTask( 'distribution', [ 'markdown', 'less:production', 'uglify:production', 'yuidoc' ] );
 
   // Update Environment.
   grunt.registerTask( 'update', [] );
