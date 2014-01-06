@@ -54,6 +54,7 @@ namespace UsabilityDynamics {
        * - transport
        *
        * @todo Implement better way of registering library scripts (ace.js, script-editor.js, etc.).
+       * @todo How to pass $args into callback function?
        *
        * @param array $_atts
        * @return bool
@@ -68,25 +69,27 @@ namespace UsabilityDynamics {
           'version' => '1.0'
         ), $_atts );
 
-        //wp_register_style( $args->name, home_url() . '/app-style.css', $args->deps, $args->version );
+        // Enqueue Frontend Style.
+        add_action( 'wp_enqueue_scripts', function() {
+          wp_register_style( 'app-style', home_url() . '/app-style.css', array(), 1.0 );
+        });
 
-        // @debug
-        // wp_enqueue_style( 'asdfsdfa', 'http://cdn.usabilitydynamics.com/js/ace/1.0.0/theme/textmate.css' );
-        // wp_enqueue_style( 'edasdfa', 'http://cdn.usabilitydynamics.com/js/ace/1.0.0/css/editor.css' );
-
-        //wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
-        //wp_register_script( 'style-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-editor.min.js', array( 'jquery', 'ace-editor' ), $args->version, true );
-        //wp_register_script( 'style-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-customizer.min.js', array( 'jquery', 'customize-preview' ), $args->version, true );
+        // Enqueue Admin Scripts.
+        add_action( 'admin_enqueue_scripts', function() {
+          wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
+          wp_register_script( 'style-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-editor.min.js', array( 'jquery', 'ace-editor' ), 1.0, true );
+          wp_register_script( 'style-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/style-customizer.min.js', array( 'jquery', 'customize-preview' ), 1.0, true );
+        });
 
         // Customize Interface.
         add_action( 'customize_controls_print_scripts', function() {
-          //wp_enqueue_script( 'ace-editor' );
-          //wp_enqueue_script( 'style-editor' );
+          wp_enqueue_script( 'ace-editor' );
+          wp_enqueue_script( 'style-editor' );
         });
 
         // Enable JavaScript in Customize Preview
         add_action( 'customize_preview_init', function() {
-          //wp_enqueue_script( 'style-customizer' );
+          wp_enqueue_script( 'style-customizer' );
         });
 
         if( !did_action( 'customize_register' ) ) {
@@ -102,6 +105,8 @@ namespace UsabilityDynamics {
        * Custom JavaScript
        *
        * @todo Implement better way of registering library scripts (ace.js, script-editor.js, etc.).
+       *
+       * @param array $_atts
        */
       static function enable_script_customizer( $_atts = array() ) {
 
@@ -111,21 +116,27 @@ namespace UsabilityDynamics {
           'version' => '1.0'
         ), $_atts );
 
-        //wp_register_script( $args->name, home_url() . '/app-script.js', $args->deps, $args->version );
+        // Enqueue Frtonend Script.
+        add_action( 'wp_enqueue_scripts', function() {
+          wp_register_style( 'app-script', home_url() . '/app-script.js', array(), 1.0 );
+        });
 
-        //wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
-        //wp_register_script( 'script-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-editor.min.js', array( 'jquery', 'ace-editor' ), $args->version, true );
-        //wp_register_script( 'script-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-customizer.min.js', array( 'jquery', 'customize-preview' ), $args->version, true );
+        // Enqueue Admin Scripts.
+        add_action( 'admin_enqueue_scripts', function() {
+          wp_register_script( 'ace-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/editor/ace.js', array(), '1.1.01', true );
+          wp_register_script( 'script-editor', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-editor.min.js', array( 'jquery', 'ace-editor' ), 1.0, true );
+          wp_register_script( 'script-customizer', home_url() . '/vendor/usabilitydynamics/lib-ui/scripts/script-customizer.min.js', array( 'jquery', 'customize-preview' ), 1.0, true );
+        });
 
         // Customize Interface.
         add_action( 'customize_controls_print_scripts', function() {
-          //wp_enqueue_script( 'ace-editor' );
-          //wp_enqueue_script( 'script-editor' );
+          wp_enqueue_script( 'ace-editor' );
+          wp_enqueue_script( 'script-editor' );
         });
 
         // Enable JavaScript in Customize Preview
         add_action( 'customize_preview_init', function() {
-          //wp_enqueue_script( 'script-customizer' );
+         wp_enqueue_script( 'script-customizer' );
         });
 
         // Register Customization.
@@ -399,7 +410,7 @@ namespace UsabilityDynamics {
        * @since 1.04
        */
       static function post_submitbox_misc_actions() {
-        global $post, $action;
+        global $post, $action, $wp_properties;
 
         if( $post->post_type == WPP_Object ) {
 
