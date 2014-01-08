@@ -1,1 +1,0 @@
-jQuery(document).ready(function(){wp.customize("custom-script",function(a){a.bind(function(a){console.log("scriptsChanged",a)})}),wp.customize("custom-script-minify",function(){}),wp.customize("custom-script-cache",function(){}),wp.customize("custom-script-footer",function(){})});
