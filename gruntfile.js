@@ -104,6 +104,7 @@ module.exports = function( grunt ) {
         },
         files: {
           'scripts/ui.markdown.js': [ 'scripts/src/ui.markdown.js' ],
+          'scripts/ui.jquery-tabs.js': [ 'scripts/src/ui.jquery-tabs.js' ],
           'scripts/ui.wp.editor.style.js': [ 'scripts/src/ui.wp.editor.style.js' ],
           'scripts/ui.wp.editor.script.js': [ 'scripts/src/ui.wp.editor.script.js' ],
           'scripts/ui.wp.customizer.script.js': [ 'scripts/src/ui.wp.customizer.script.js'],
