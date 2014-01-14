@@ -14,14 +14,20 @@ define( 'udx.ui.jquery.tabs', function scriptEditor( require, exports, module ) 
   return function callbackOfEditor() {
     module.log( 'callbackOfEditor', 'Module initialized.' );
 
+    // Ensure UI Tabs Available.
     if( !jQuery.fn.tabs ) {
-      return module.error( 'jQuery.fn.tabs not defined' );;
+      return module.error( 'jQuery.fn.tabs not defined' );
     }
 
-    // console.log( jQuery.fn.tabs );
+    // Enanble Tabs.
     var _tabs = jQuery( this ).tabs({
       collapsible: true
     });
+
+    // Make Visble.
+    if( _tabs.hasClass( 'hidden' ) ) {
+     _tabs.removeClass( 'hidden' )
+    }
 
     return _tabs;
 
