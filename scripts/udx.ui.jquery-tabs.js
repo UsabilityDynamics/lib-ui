@@ -1,1 +1,0 @@
-define("udx.ui.jquery-tabs",function(){return function(){require("jquery")(this).tabs({collapsible:!0})}});
