@@ -1,1 +1,1 @@
-define("udx.ui.jquery.tabs",["jquery","jquery.ui"],function(a){return console.log("jQuery inline",a),console.log("jQuery.init inline",a.init),console.log("jQuery.fn inline",a.fn),function(){var a=require("jquery");console.log("jQuery",a),console.log("jQuery.init",a.init),console.log("jQuery.fn",a.fn)}});
+define("udx.ui.jquery.tabs",function(a,b,c){return c.log("Module loaded."),function(){if(c.log("callbackOfEditor","Module initialized."),!jQuery.fn.tabs)return c.error("jQuery.fn.tabs not defined");var a=jQuery(this).tabs({collapsible:!0});return a}});

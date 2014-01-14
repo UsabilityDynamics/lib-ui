@@ -3,42 +3,27 @@
  *
  * Handles editor and UI.
  *
- * @note if there are inline deps in the define() method then (require, exports and module) won't be available.
- *
- * $.fn.tabs === jQuery.tabs
- * $ === jQuery.init
+ * We use jQuery.ui.tabs( options, element ) instead of jQuery().tabs( options ).
  *
  */
-define( 'udx.ui.jquery.tabs', [ 'jquery', 'jquery.ui' ], function scriptEditor( jQuery ) {
-  //console.log( module.id, 'initialized from', module.uri );
-  console.log( 'jQuery inline', jQuery );
-  console.log( 'jQuery.init inline', jQuery.init );
-  console.log( 'jQuery.fn inline', jQuery.fn );
+define( 'udx.ui.jquery.tabs', function scriptEditor( require, exports, module ) {
+  module.log( 'Module loaded.' );
+  // module.debug( 'module debug' );
+  // module.error( 'module error' );
 
   return function callbackOfEditor() {
-    // console.log( 'callbackOfEditor() ', module.id, 'in context', this );
-
-
-    var jQuery = require( 'jquery' );
-
-    console.log( 'jQuery', jQuery );
-    console.log( 'jQuery.init', jQuery.init );
-    console.log( 'jQuery.fn', jQuery.fn );
-
-    return;
-    // console.log( "JQUERY DEBUG", typeof require( 'jquery' ).fn.tabs );
-
-    if( !jQuery || !jQuery.fn ) {
-      return console.error( 'jQuery not available.' );
-    }
+    module.log( 'callbackOfEditor', 'Module initialized.' );
 
     if( !jQuery.fn.tabs ) {
-      return console.error( 'jQuery.fn.tabs not available.' );
+      return module.error( 'jQuery.fn.tabs not defined' );;
     }
 
-    jQuery( this ).tabs({
+    // console.log( jQuery.fn.tabs );
+    var _tabs = jQuery( this ).tabs({
       collapsible: true
     });
+
+    return _tabs;
 
   };
 
