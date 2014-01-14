@@ -6,17 +6,17 @@
  * We use jQuery.ui.tabs( options, element ) instead of jQuery().tabs( options ).
  *
  */
-define( 'udx.ui.jquery.tabs', function scriptEditor( require, exports, module ) {
-  module.log( 'Module loaded.' );
+define( 'udx.ui.jquery.tabs', [ 'jquery.ui' ], function scriptEditor() {
+  // module.log( 'Module loaded.' );
   // module.debug( 'module debug' );
   // module.error( 'module error' );
 
-  return function callbackOfEditor() {
-    module.log( 'callbackOfEditor', 'Module initialized.' );
+  return function domnReady() {
+    // module.log( 'callbackOfEditor', 'Module initialized.' );
 
     // Ensure UI Tabs Available.
     if( !jQuery.fn.tabs ) {
-      return module.error( 'jQuery.fn.tabs not defined' );
+      return console.error( 'jQuery.fn.tabs not defined' );
     }
 
     // Enanble Tabs.
