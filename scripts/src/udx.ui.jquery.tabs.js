@@ -19,6 +19,8 @@ define( 'udx.ui.jquery.tabs', [ 'jquery.ui' ], function scriptEditor() {
       return console.error( 'jQuery.fn.tabs not defined' );
     }
 
+    // this.getAttribute( 'data-size' );
+
     // Enanble Tabs.
     var _tabs = jQuery( this ).tabs({
       collapsible: true
