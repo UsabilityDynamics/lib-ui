@@ -8,10 +8,10 @@ module.exports = function( grunt ) {
 
   grunt.initConfig({
 
-    // Get Project Details.
+    // LESS Compilation.
     pkg: grunt.file.readJSON( 'composer.json' ),
 
-    // Compile LESS in app.css
+    // LESS Compilation.
     less: {
       production: {
         options: {
@@ -45,33 +45,21 @@ module.exports = function( grunt ) {
       all: [ 'test/*.js' ]
     },
 
-    // Create AMD files.
-    requirejs: {
-      dev: {
+    // Minify all JS Files.
+    uglify: {
+      production: {
         options: {
-          name: 'app.dev',
-          baseUrl: 'scripts',
-          out: "scripts/app.js",
-          paths: {
-            "knockout": 'http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js',
-            lodash: 'http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.2.1/lodash.min.js',
-            async: 'http://cdnjs.cloudflare.com/ajax/libs/async/0.2.7/async.min.js'
+          preserveComments: false,
+          wrap: false
+        },
+        files: [
+          {
+            expand: true,
+            cwd: 'scripts/src',
+            src: [ '*.js' ],
+            dest: 'scripts'
           }
-        }
-      }
-    },
-
-    // Documentation.
-    yuidoc: {
-      compile: {
-        name: '<%= pkg.name %>',
-        description: '<%= pkg.description %>',
-        version: '<%= pkg.version %>',
-        url: '<%= pkg.homepage %>',
-        options: {
-          paths: 'lib',
-          outdir: 'static/codex/'
-        }
+        ]
       }
     },
 
@@ -92,24 +80,6 @@ module.exports = function( grunt ) {
           'scripts/src/*.js'
         ],
         tasks: [ 'uglify' ]
-      }
-    },
-
-    // Minify all JS Files.
-    uglify: {
-      production: {
-        options: {
-          preserveComments: false,
-          wrap: false
-        },
-        files: [
-          {
-            expand: true,
-            cwd: 'scripts/src',
-            src: [ '*.js' ],
-            dest: 'scripts'
-          }
-        ]
       }
     },
 
@@ -139,14 +109,27 @@ module.exports = function( grunt ) {
     // Remove Things.
     clean: [
       "vendor"
-    ]
+    ],
+
+    // Documentation.
+    yuidoc: {
+      compile: {
+        name: '<%= pkg.name %>',
+        description: '<%= pkg.description %>',
+        version: '<%= pkg.version %>',
+        url: '<%= pkg.homepage %>',
+        options: {
+          paths: 'lib',
+          outdir: 'static/codex/'
+        }
+      }
+    }
 
   });
 
   // Load NPM Tasks.
   grunt.loadNpmTasks( 'grunt-markdown' );
   grunt.loadNpmTasks( 'grunt-mocha-cli' );
-  grunt.loadNpmTasks( 'grunt-requirejs' );
   grunt.loadNpmTasks( 'grunt-contrib-yuidoc' );
   grunt.loadNpmTasks( 'grunt-contrib-uglify' );
   grunt.loadNpmTasks( 'grunt-contrib-watch' );
