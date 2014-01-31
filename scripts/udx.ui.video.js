@@ -1,0 +1,1 @@
+define("udx.ui.video",function(){return console.debug("udx.ui.video","loaded"),function(){return console.debug("udx.ui.video","ready"),this}});

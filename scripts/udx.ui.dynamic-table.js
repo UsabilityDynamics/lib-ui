@@ -1,1 +1,1 @@
-define("udx.ui.dynamic-table",["jquery.ui"],function(){return function(){if(!jQuery.fn.tabs)return console.error("jQuery.fn.tabs not defined");var a=jQuery(this).tabs({collapsible:!0});return a.hasClass("hidden")&&a.removeClass("hidden"),a}});
+define("udx.ui.dynamic-table",["udx.utility"],function(){return console.log("udx.ui.dynamic-table","dynamicTable"),function(){console.log("udx.ui.dynamic-table","domReady");require("udx.utility")}});
