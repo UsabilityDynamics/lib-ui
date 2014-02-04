@@ -1,6 +1,8 @@
 <?php
 /**
+ * Style Editor Customizer
  *
+ * @version 1.0.0
  */
 namespace UsabilityDynamics\UI {
 
@@ -23,7 +25,7 @@ namespace UsabilityDynamics\UI {
      */
     public function render_content() {
 
-      echo join( '', [
+      echo join( '', array(
         '<div id="udx-style-editor-wrapper" class="udx-customization-editor" data-require="ui.wp.editor.style"></div>',
         '<textarea id="udx-style-editor" rows="15" style="width:100%;" ',
         $this->get_link(),
@@ -31,7 +33,7 @@ namespace UsabilityDynamics\UI {
         esc_textarea( $this->value() ),
         '</textarea>',
 
-      ]);
+      ));
 
     }
 
