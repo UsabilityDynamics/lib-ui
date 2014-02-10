@@ -1,31 +1,72 @@
 /**
  * Gallery
  *
+ * @todo Add imagesloaded module so Isotope isn't bound too early.
+ *
  */
 define( 'udx.ui.gallery', [ 'jquery.isotope', 'jquery.fancybox' ], function Gallery() {
   console.debug( 'udx.ui.gallery', 'loaded' );
 
-  return function domnReady() {
-    console.debug( 'udx.ui.gallery', 'ready' );
+  /**
+   * Bind Fancybox.
+   *
+   */
+  function bindFancybox( element ) {
 
-    var element = jQuery( this );
+    // data-fancybox-group
 
-    element.isotope( {
+    jQuery( 'a', element ).fancybox({
+      speedIn: 600,
+      speedOut: 200,
+      helpers:  {
+        title : {
+          type : 'inside'
+        },
+        overlay : {
+          showEarly : false
+        }
+      }
+    });
+
+  }
+
+  /**
+   * Bind Isotpe.
+   *
+   */
+  function bindIsotope( element ) {
+
+    element.isotope({
       cellsByColumn: {
         columnWidth: 240,
         rowHeight: 360
       }
-    } );
+    });
 
-    jQuery( "a", element ).fancybox( {
-      'transitionIn': 'elastic',
-      'transitionOut': 'elastic',
-      'speedIn': 600,
-      'speedOut': 200,
-      'overlayShow': false
-    } );
+  }
 
-    return element;
+  /**
+   * Execute on DOM Ready.
+   *
+   */
+  return function domnReady() {
+    console.debug( 'udx.ui.gallery', 'ready' );
+
+    // Set default optiosn.
+    this.options = this.options || {
+      isotope: true,
+      fancybox: true
+    };
+
+    if( this.options.isotope ) {
+      bindIsotope( jQuery( this ) );
+    }
+
+    if( this.options.fancybox ) {
+      bindFancybox( jQuery( this ) );
+    }
+
+    return this;
 
   };
 
