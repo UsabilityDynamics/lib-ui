@@ -1,0 +1,1 @@
+define("udx.ui.gallery",["jquery.isotope","jquery.fancybox"],function(){return console.debug("udx.ui.gallery","loaded"),function(){console.debug("udx.ui.gallery","ready");var a=jQuery(this);return a.isotope({cellsByColumn:{columnWidth:240,rowHeight:360}}),jQuery("a",a).fancybox({transitionIn:"elastic",transitionOut:"elastic",speedIn:600,speedOut:200,overlayShow:!1}),a}});

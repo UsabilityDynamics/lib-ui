@@ -1,0 +1,1 @@
+define("udx.ui.swiper",["udx.utility"],function(){return console.debug("udx.ui.swiper","loaded"),function(){return console.debug("udx.ui.swiper","ready"),this}});
