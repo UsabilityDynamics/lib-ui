@@ -3,9 +3,14 @@
  *
  * @todo Add imagesloaded module so Isotope isn't bound too early.
  *
+ * @author potanin@UD
  */
 define( 'udx.ui.gallery', [ 'jquery.isotope', 'jquery.fancybox' ], function Gallery() {
   console.debug( 'udx.ui.gallery', 'loaded' );
+
+  document.addEventListener( 'DOMContentLoaded', function() {
+    // console.debug( 'DOMContentLoaded' );
+  });
 
   /**
    * Bind Fancybox.
@@ -68,7 +73,8 @@ define( 'udx.ui.gallery', [ 'jquery.isotope', 'jquery.fancybox' ], function Gall
 
     return this;
 
-  };
+  }
+
 
 });
 
