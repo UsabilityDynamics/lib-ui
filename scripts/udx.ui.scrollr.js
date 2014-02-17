@@ -1,0 +1,1 @@
+define("udx.ui.scrollr",["scrollr"],function(){return console.debug("udx.ui.scrollr","loaded"),function(){return console.debug("udx.ui.scrollr","ready"),"undefined"==typeof skrollr&&console.error("udx.ui.swiper","Scrollr is not available."),this=skrollr.init({forceHeight:!1})}});
