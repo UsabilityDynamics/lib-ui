@@ -19,9 +19,13 @@ define( 'udx.ui.scrollr', [ 'scrollr' ], function( jQuery ) {
     if( 'undefined' == typeof skrollr ) {
       console.error( 'udx.ui.swiper', 'Scrollr is not available.' );
     }
-
-    this = skrollr.init({
+    
+    this.options = Object.extend( this.options, {
       forceHeight:false
+    });
+
+    this.skrollr = skrollr.init({
+      forceHeight:this.options.forceHeight
     });
 
     return this;
