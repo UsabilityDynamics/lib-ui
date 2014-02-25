@@ -71,7 +71,7 @@ namespace UsabilityDynamics {
 
         // Enqueue Frontend Style.
         add_action( 'wp_enqueue_scripts', function() {
-          wp_register_style( 'app.style', home_url() . '/app.style.css', array(), 1.0 );
+          // wp_register_style( 'app.style', home_url() . '/app.style.css', array(), 1.0 );
         });
 
         // Enable JavaScript Library Loading.
@@ -113,7 +113,8 @@ namespace UsabilityDynamics {
 
         // Enqueue Frtonend Script.
         add_action( 'wp_enqueue_scripts', function() {
-          wp_register_script( 'app.script', home_url() . '/app.script.js', array(), 1.0 );
+          // Commented out because referencing non-existant script. potanin@UD 2/25/14
+          // wp_register_script( 'app.script', home_url() . '/app.customizer.script.js', array(), 1.0 );
         });
 
         // Register Customization.
