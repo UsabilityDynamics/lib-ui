@@ -34,6 +34,9 @@ namespace UsabilityDynamics {
       public static $version = '0.2.0';
 
       /**
+       *
+       * UsabilityDynamics\UI::enable_style_customizer( array( 'name'  => 'app-style' ));
+       *
        * Built-in Sections:
        * - title_tagline
        * - colors
@@ -71,7 +74,7 @@ namespace UsabilityDynamics {
 
         // Enqueue Frontend Style.
         add_action( 'wp_enqueue_scripts', function() {
-          // wp_register_style( 'app.style', home_url() . '/app.style.css', array(), 1.0 );
+          wp_register_style( 'app.style', home_url() . '/app.style.css', array(), 1.0 );
         });
 
         // Enable JavaScript Library Loading.
