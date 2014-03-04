@@ -1,1 +1,0 @@
-define("ui.wp.editor.style",function(a,b,c){return console.log(c.id,"initialized from",c.uri),function(){console.log(c.id,"in context")}});
