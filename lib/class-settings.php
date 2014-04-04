@@ -18,7 +18,9 @@ namespace UsabilityDynamics\UI {
        * Constructor
        *
        */
-      public function __construct( $args = false ) {
+      public function __construct( $settings, $args = false ) {
+        
+        //is_subclass_of 
         
         $args = wp_parse_args( $args, array(
           'schema' => array(),
