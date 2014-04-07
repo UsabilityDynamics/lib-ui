@@ -14,73 +14,107 @@ namespace UsabilityDynamics\UI {
      */
     class Settings {
 
+      public $settings;
+      
+      public $schema;
+    
       /**
        * Constructor
        *
        * @param UsabilityDynamics\Settings object $settings
        * @param array $args
        */
-      public function __construct( $settings, $args = false ) {
-        
-        $args = wp_parse_args( $args, array(
-          'schema' => array(),
-        ) );
+      public function __construct( $settings, $schema ) {
         
         //** Break if settings var is incorrect */
         if( !is_subclass_of( $settings, 'UsabilityDynamics\Settings' ) ) {
           return;
         }
-        //** Break if schema is not valid */
-        if( !$this->parse_schema( $args[ 'schema' ] ) ) {
+        $this->settings = $settings;
+        
+        //** Break if schema is incorrect */
+        if( !$this->schema = $this->is_valid_schema( $schema ) ) {
           return;
         }
         
-        //** Now initialize settings UI. */
+        //** Initializes settings UI */
+        add_action( 'admin_menu', array( $this, 'admin_menu' ), 100 );
         
       }
       
       /**
-       * Parse schema:
-       * - Validates schema
-       * - Adds Settings Menu
+       * Multiple actions (action on admin_menu hook):
+       * - parse (validate) schema
+       * - add settings page to menu
+       * - add specific hooks
        *
        */
-      private function parse_schema( $schema = array() ) {
+      public function admin_menu() {
+        global $submenu, $menu;
         
-        //echo "<pre>"; print_r( $schema ); echo "</pre>"; die();
+        extract( $this->schema[ 'configuration' ] );
         
-        try {
+        $parent_slug = false;
+        $capability = 'manage_options';
         
-          if( empty( $schema[ 'configuration' ] ) ) {
-            throw new Exception( 'configuration data is not set' );
-          } else if ( empty( $schema[ 'fields' ] ) ) {
-            throw new Exception( 'fields data is not set' );
+        // Maybe add main menu
+        if ( $main_menu && is_string( $main_menu ) ) {
+          if ( !isset( $submenu[ $main_menu ] ) ) {
+            // Menu must exists if we pass the string.
+            return false;
           }
-          
-          if( !$this->add_menu( $schema[ 'configuration' ] ) ) {
-            throw new Exception( 'menu could not be added' );
+          $parent_slug = $main_menu;
+          // Maybe set the same capability for secondary menu as main menu has
+          foreach( $menu as $item ) {
+            if( $item[2] == $main_menu ) {
+              $capability = $item[1];
+              break;
+            }
           }
-        
-        } catch ( Exception $e ) {
-          // @todo: log to console (firebug)
+        }  elseif ( $main_menu && is_array( $main_menu ) ) {
+          extract( $main_menu = wp_parse_args( $main_menu, array(
+            'page_title' => '',
+            'menu_title' => '',
+            'capability' => $capability,
+            'menu_slug' => false,
+            'icon_url' => '',
+            'position' => 61,
+          ) ) );
+          add_menu_page( $page_title, $menu_title, $capability, $menu_slug, array( $this, 'render' ), $icon_url, $position );
+          $parent_slug = $menu_slug;
+        } else {
           return false;
         }
         
-        return true;
+        //Maybe add secondary menu
+        if ( $main_menu && is_array( $secondary_menu ) && isset( $parent_slug ) ) {
+          extract( $secondary_menu = wp_parse_args( $secondary_menu, array(
+            'parent_slug' => $parent_slug,
+            'page_title' => '',
+            'menu_title' => '',
+            'capability' => $capability,
+            'menu_slug' => '',
+          ) ) );
+          add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, array( $this, 'render' ) );
+        }
         
       }
       
       /**
-       *
-       *
+       * Render Settings page
+       * 
        */
-      private function add_menu( $config ) {
-        
-        $config = wp_parse_args( $config, array(
-          'menu' => false,
-        ) );
-        
-        return false;
+      public function render() {
+        echo "Hello World!";
+        //echo "<pre>"; print_r(  ); echo "</pre>"; die();
+      }
+      
+      /**
+       * Validates schema
+       * @todo: implement schema validator
+       */
+      private function is_valid_schema( $schema ) {
+        return $schema;
       }
     
     }
