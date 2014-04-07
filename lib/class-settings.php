@@ -105,6 +105,8 @@ namespace UsabilityDynamics\UI {
        * 
        */
       public function render() {
+        wp_enqueue_script( 'accordion' );
+        
         $this->get_template_part( 'main' );
       }
       
@@ -149,7 +151,7 @@ namespace UsabilityDynamics\UI {
        *
        */
       public function get_fields( $v = false, $group = 'section' ) {
-        
+        return array();
       }
       
       /**

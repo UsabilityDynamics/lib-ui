@@ -3,6 +3,11 @@
  * Settings page tab template
  */
 ?>
-<div class="settings-section">
-  
+<h3 class="accordion-section-title hndle" tabindex="0" title="<?php echo esc_attr( $section[ 'name' ] ); ?>"><?php echo esc_html( $section[ 'name' ] ); ?></h3>
+<div class="accordion-section-content">
+  <div class="inside">
+    <?php foreach( $this->get_fields( $section[ 'id' ] ) as $field ) : ?>
+      
+    <?php endforeach; ?>
+  </div><!-- .inside -->
 </div>
