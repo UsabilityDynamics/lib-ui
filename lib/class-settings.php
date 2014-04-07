@@ -113,6 +113,9 @@ namespace UsabilityDynamics\UI {
        * 
        */
       public function get_template_part( $name, $data = array() ) {
+        if( is_array( $data ) ) {
+          extract( $data );
+        }
         $path = dirname( __DIR__ ) . '/templates/admin/' . $name . '.php';
         //echo "<pre>"; print_r( $path ); echo "</pre>"; die();
         if( file_exists( $path ) ) {
@@ -120,6 +123,10 @@ namespace UsabilityDynamics\UI {
         }
       }
       
+      /**
+       * 
+       *
+       */
       public function get( $key, $type = 'settings', $default = null ) {
         switch( $type ) {
           case 'settings':
@@ -135,22 +142,6 @@ namespace UsabilityDynamics\UI {
             break;
         }
         return false;
-      }
-      
-      /**
-       * 
-       *
-       */
-      public function get_menu( $menu = false ) {
-      
-      }
-      
-      /**
-       * 
-       *
-       */
-      public function get_sections( $section = false ) {
-      
       }
       
       /**
