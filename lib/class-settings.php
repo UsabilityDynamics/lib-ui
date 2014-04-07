@@ -105,8 +105,60 @@ namespace UsabilityDynamics\UI {
        * 
        */
       public function render() {
-        echo "Hello World!";
-        //echo "<pre>"; print_r(  ); echo "</pre>"; die();
+        $this->get_template_part( 'main' );
+      }
+      
+      /**
+       * Renders template part.
+       * 
+       */
+      public function get_template_part( $name, $data = array() ) {
+        $path = dirname( __DIR__ ) . '/templates/admin/' . $name . '.php';
+        //echo "<pre>"; print_r( $path ); echo "</pre>"; die();
+        if( file_exists( $path ) ) {
+          include( $path );
+        }
+      }
+      
+      public function get( $key, $type = 'settings', $default = null ) {
+        switch( $type ) {
+          case 'settings':
+            return $this->settings->get( $key, $default );
+            break;
+          case 'schema':
+            // Resolve dot-notated key.
+            if( strpos( $key, '.' ) ) {
+              return $this->parse_schema( $key, $default );
+            }
+            // Return value or default.
+            return isset( $this->schema[ $key ] ) ? $this->schema[ $key ] : $default;
+            break;
+        }
+        return false;
+      }
+      
+      /**
+       * 
+       *
+       */
+      public function get_menu( $menu = false ) {
+      
+      }
+      
+      /**
+       * 
+       *
+       */
+      public function get_sections( $section = false ) {
+      
+      }
+      
+      /**
+       * 
+       *
+       */
+      public function get_fields( $v = false, $group = 'section' ) {
+        
       }
       
       /**
@@ -115,6 +167,31 @@ namespace UsabilityDynamics\UI {
        */
       private function is_valid_schema( $schema ) {
         return $schema;
+      }
+      
+      /**
+       * Resolve dot-notated key.
+       *
+       * @source http://stackoverflow.com/questions/14704984/best-way-for-dot-notation-access-to-multidimensional-array-in-php
+       *
+       * @param       $a
+       * @param       $path
+       * @param null  $default
+       *
+       * @internal param array $a
+       * @return array|null
+       */
+      private function parse_schema( $path, $default = null ) {
+        $current = $this->schema;
+        $p = strtok( $path, '.' );
+        while( $p !== false ) {
+          if( !isset( $current[ $p ] ) ) {
+            return $default;
+          }
+          $current = $current[ $p ];
+          $p = strtok( '.' );
+        }
+        return $current;
       }
     
     }
