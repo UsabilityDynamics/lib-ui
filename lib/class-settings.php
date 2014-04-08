@@ -38,6 +38,10 @@ namespace UsabilityDynamics\UI {
         }
         
         //** Initializes settings UI */
+        
+        foreach ( $this->get_fields() as $field ) {
+          $field->add_actions();
+        }
         add_action( 'admin_menu', array( $this, 'admin_menu' ), 100 );
         
       }
@@ -107,6 +111,11 @@ namespace UsabilityDynamics\UI {
       public function render() {
         wp_enqueue_script( 'accordion' );
         
+        //** Initializes settings UI */
+        foreach ( $this->get_fields() as $field ) {
+          $field->admin_enqueue_scripts();
+        }
+        
         $this->get_template_part( 'main' );
       }
       
@@ -119,7 +128,6 @@ namespace UsabilityDynamics\UI {
           extract( $data );
         }
         $path = dirname( __DIR__ ) . '/templates/admin/' . $name . '.php';
-        //echo "<pre>"; print_r( $path ); echo "</pre>"; die();
         if( file_exists( $path ) ) {
           include( $path );
         }
@@ -147,11 +155,97 @@ namespace UsabilityDynamics\UI {
       }
       
       /**
-       * 
+       * Returns the list on prepared fields
        *
        */
-      public function get_fields( $v = false, $group = 'section' ) {
-        return array();
+      public function get_fields( $group = false, $v = false ) {
+      
+        $fields = array();
+      
+        if( !empty( $group ) && !empty( $v ) ) {
+          switch( $group ) {
+            case 'section':
+              foreach( $this->get( 'fields', 'schema' ) as $field ) {
+                $field = $this->get_field( $field );
+                if( $field && $field->section == $v ) {
+                  $fields[] = $field;
+                }
+              }
+              break;
+            case 'menu':
+            case 'tab':
+              $sections = array();
+              foreach( $this->get( 'sections', 'schema' ) as $section ) {
+                if( isset( $section[ 'menu' ] ) && $section[ 'menu' ] == $v ) {
+                  $sections[] = $section[ 'id' ];
+                }
+              }
+              foreach( $this->get( 'fields', 'schema' ) as $field ) {
+                $field = $this->get_field( $field );
+                if( $field && in_array( $field->section, $sections ) ) {
+                  $fields[] = $field;
+                }
+              }
+              break;
+          }
+        }
+      
+        return $fields;
+      }
+      
+      /**
+       * Prepares ( normalizes ) field
+       *
+       * @param array $field
+       * @return object $field
+       */
+      public function get_field( $field ) {
+        static $fields = array();
+        
+        if( is_object( $field ) && is_subclass_of( $field, 'UsabilityDynamics\UI\Field' ) ) {
+          return $field;
+        } else {
+          // Something went wrong. Variable must not be an object on this step.
+          if( is_object( $field ) ) {
+            return false;
+          }
+          
+          // Probably we already initialized field object. So, just return it.
+          if( !empty( $fields[ $field[ 'id' ] ] ) ) {
+            return $fields[ $field[ 'id' ] ];
+          }
+          
+          $field[ 'type' ] = !empty( $field[ 'type' ] ) ? $field[ 'type' ] : 'text';
+          
+          //var_dump( $this->get_field_class_name( $field ) );die();
+          $field = call_user_func( array( $this->get_field_class_name( $field ), 'init' ), $field );
+          if( !$field ) {
+            return false;
+          }
+          $fields[ $field->id ] = $field;
+        }
+        return $field;
+      }
+      
+      /**
+       * Get field class name
+       *
+       * @param array $field Field array
+       *
+       * @return bool|string Field class name OR false on failure
+       */
+      static function get_field_class_name( $field ) {
+        // Convert underscores to whitespace so ucwords works as expected. Otherwise: plupload_image -> Plupload_image instead of Plupload_Image
+        $_type = str_replace( '_', ' ', $field['type'] );
+        $_type = ucwords( $_type );
+        // Replace whitespace with underscores
+        $_type = str_replace( ' ', '_', $_type );
+        
+        $class = "\UsabilityDynamics\UI\Field_{$_type}";
+        if ( !class_exists( $class ) ) {
+          return false;
+        }
+        return $class;
       }
       
       /**
