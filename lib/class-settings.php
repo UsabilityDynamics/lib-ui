@@ -216,8 +216,10 @@ namespace UsabilityDynamics\UI {
           }
           
           $field[ 'type' ] = !empty( $field[ 'type' ] ) ? $field[ 'type' ] : 'text';
+          $field[ 'value' ] = $this->get( $field[ 'id' ] );
+          $field[ 'field_name' ] = $field[ 'id' ];
+          $field[ 'id' ] = sanitize_key( str_replace( '.', '_', $field[ 'id' ] ) );
           
-          //var_dump( $this->get_field_class_name( $field ) );die();
           $field = call_user_func( array( $this->get_field_class_name( $field ), 'init' ), $field );
           if( !$field ) {
             return false;
