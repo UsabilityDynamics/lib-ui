@@ -7,7 +7,7 @@
 <div class="accordion-section-content">
   <div class="inside">
     <?php foreach( $this->get_fields( 'section', $section[ 'id' ] ) as $field ) : ?>
-      <?php echo "<pre>"; print_r( $field ); echo "</pre>"; ?>
+      <?php $field->show(); ?>
     <?php endforeach; ?>
   </div><!-- .inside -->
 </div>

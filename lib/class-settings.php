@@ -99,7 +99,45 @@ namespace UsabilityDynamics\UI {
             'capability' => $capability,
             'menu_slug' => '',
           ) ) );
-          add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, array( $this, 'render' ) );
+          $id = add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, array( $this, 'render' ) );
+          add_action( 'load-' . $id, array( $this, 'request' ) );
+          
+        }
+        
+      }
+      
+      /**
+       * Saves data.
+       * 
+       */
+      public function request() {
+        // Determine if we have to do form submit
+        if ( !isset( $_POST['_wpnonce'] ) || !wp_verify_nonce( $_POST['_wpnonce'], 'ui_settings' )  ) {
+          return false;
+        } 
+        
+        $fields = $this->get( 'fields', 'schema' );
+        
+        $changed = false;
+        foreach( $_POST as $i => $v ) {
+          $id = str_replace( '|', '.', $i );
+          $match = false;
+          foreach( $fields as $field ) {
+            if( $field[ 'id' ] == $id ) {
+              $match = true;
+              break;
+            }
+          }
+          if( $match ) {
+            $changed = true;
+            $this->settings->set( $id, $v );
+          }
+        }
+        
+        if( $changed ) {
+          $this->settings->commit();
+          wp_redirect( $_POST[ '_wp_http_referer' ] . '&message=updated' );
+          exit;
         }
         
       }
@@ -217,7 +255,7 @@ namespace UsabilityDynamics\UI {
           
           $field[ 'type' ] = !empty( $field[ 'type' ] ) ? $field[ 'type' ] : 'text';
           $field[ 'value' ] = $this->get( $field[ 'id' ] );
-          $field[ 'field_name' ] = $field[ 'id' ];
+          $field[ 'field_name' ] = str_replace( '.', '|', $field[ 'id' ] );
           $field[ 'id' ] = sanitize_key( str_replace( '.', '_', $field[ 'id' ] ) );
           
           $field = call_user_func( array( $this->get_field_class_name( $field ), 'init' ), $field );
