@@ -20,7 +20,8 @@ module.exports = function( grunt ) {
         },
         files: {
           'styles/ui.css': [ 'styles/src/ui.less' ],
-          'styles/ui.markdown.css': [ 'styles/src/ui.markdown.less' ]
+          'styles/ui.markdown.css': [ 'styles/src/ui.markdown.less' ],
+          'styles/admin/ui.settings.css': [ 'styles/src/admin/ui.settings.less' ]
         }
       },
       development: {
@@ -30,7 +31,8 @@ module.exports = function( grunt ) {
         },
         files: {
           'styles/ui.dev.css': [ 'styles/src/ui.less' ],
-          'styles/ui.markdown.dev.css': [ 'styles/src/ui.markdown.less' ]
+          'styles/ui.markdown.dev.css': [ 'styles/src/ui.markdown.less' ],
+          'styles/admin/ui.settings.dev.css': [ 'styles/src/admin/ui.settings.less' ]
         }
       }
     },
@@ -58,6 +60,12 @@ module.exports = function( grunt ) {
             cwd: 'scripts/src',
             src: [ '*.js' ],
             dest: 'scripts'
+          },
+          {
+            expand: true,
+            cwd: 'scripts/src/admin',
+            src: [ '*.js' ],
+            dest: 'scripts/admin'
           }
         ]
       }
@@ -71,13 +79,15 @@ module.exports = function( grunt ) {
       },
       less: {
         files: [
-          'styles/less/*.less'
+          'styles/src/*.less',
+          'styles/src/admin/*.less',
         ],
         tasks: [ 'less' ]
       },
       js: {
         files: [
-          'scripts/src/*.js'
+          'scripts/src/*.js',
+          'scripts/src/admin/*.js',
         ],
         tasks: [ 'uglify' ]
       }

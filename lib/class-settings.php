@@ -28,7 +28,9 @@ namespace UsabilityDynamics\UI {
         
         //** Break if settings var is incorrect */
         if( !is_subclass_of( $settings, 'UsabilityDynamics\Settings' ) ) {
-          return;
+          if( get_class( $settings ) !== 'UsabilityDynamics\Settings' ) {
+            return;
+          }
         }
         $this->settings = $settings;
         
@@ -101,7 +103,6 @@ namespace UsabilityDynamics\UI {
           ) ) );
           $id = add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, array( $this, 'render' ) );
           add_action( 'load-' . $id, array( $this, 'request' ) );
-          
         }
         
       }
@@ -148,6 +149,9 @@ namespace UsabilityDynamics\UI {
        */
       public function render() {
         wp_enqueue_script( 'accordion' );
+        wp_enqueue_script( 'ud-ui-settings', plugins_url( '/scripts/admin/ui.settings.js', __FILE__ ) );
+        
+        wp_enqueue_style( 'ud-ui-settings', plugins_url( '/styles/admin/ui.settings.css', __FILE__ ) );
         
         //** Initializes settings UI */
         foreach ( $this->get_fields() as $field ) {
