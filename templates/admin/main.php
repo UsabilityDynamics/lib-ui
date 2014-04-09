@@ -5,6 +5,11 @@
 ?>
 <div class="wrap">
   <h2><?php echo $this->get( 'configuration.secondary_menu.page_title', 'schema' ); ?></h2>
+  <?php if( isset( $_REQUEST[ 'message' ] ) ) : ?>
+    <?php if( $_REQUEST[ 'message' ] == 'updated' ) : ?>
+      <div class="updated fade"><?php _e( 'Settings updated' ); ?></div>
+    <?php endif; ?>
+  <?php endif; ?>
   <div class="settings-content" style="display:none;">
     <form id="uis_form" action="" method="post" >
       <?php wp_nonce_field( 'ui_settings' ); ?>
