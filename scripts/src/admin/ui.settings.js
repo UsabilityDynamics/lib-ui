@@ -3,8 +3,11 @@
  *
  */
 ( function( $ ){
-
-  console.log( 'Hello World! UI' );
-
+  
+  $( '#tabs' ).tabs();
+  setTimeout( function() {
+    $( '.settings-content' ).show();
+  }, 100 );
+ 
 } )( jQuery );
 

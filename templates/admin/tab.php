@@ -3,7 +3,7 @@
  * Settings page tab template
  */
 ?>
-<div class="settings-tab <?php echo isset( $menu[ 'name' ] ) ? $menu[ 'name' ] : ''; ?>">
+<div class="settings-tab <?php echo isset( $menu[ 'id' ] ) ? $menu[ 'id' ] : ''; ?>">
   <?php if( !empty( $menu[ 'desc' ] ) ) : ?>
     <div class="desc"><?php echo $menu[ 'desc' ]; ?></div>
   <?php endif; ?>

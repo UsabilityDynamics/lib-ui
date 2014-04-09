@@ -1,1 +1,1 @@
-!function(){console.log("Hello World! UI")}(jQuery);
+!function(a){a("#tabs").tabs(),setTimeout(function(){a(".settings-content").show()},100)}(jQuery);

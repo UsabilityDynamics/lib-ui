@@ -148,10 +148,14 @@ namespace UsabilityDynamics\UI {
        * 
        */
       public function render() {
+        wp_enqueue_script( 'jquery-ui-tabs' );
         wp_enqueue_script( 'accordion' );
-        wp_enqueue_script( 'ud-ui-settings', plugins_url( '/scripts/admin/ui.settings.js', __FILE__ ) );
+        wp_enqueue_script( 'ud-ui-settings', plugins_url( '/scripts/admin/ui.settings.js', dirname( dirname( __FILE__ ) ) ), array( 
+          'jquery-ui-tabs', 
+          'accordion' 
+        ) );
         
-        wp_enqueue_style( 'ud-ui-settings', plugins_url( '/styles/admin/ui.settings.css', __FILE__ ) );
+        wp_enqueue_style( 'ud-ui-settings', plugins_url( '/styles/admin/ui.settings.css', dirname( dirname( __FILE__ ) ) ) );
         
         //** Initializes settings UI */
         foreach ( $this->get_fields() as $field ) {
