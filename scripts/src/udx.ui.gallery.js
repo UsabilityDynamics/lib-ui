@@ -52,7 +52,7 @@ define( 'udx.ui.gallery', [ 'udx.utility.imagesloaded', 'jquery.isotope', 'jquer
     var imagesLoaded = require( 'udx.utility.imagesloaded' )( this );
 
     imagesLoaded.on( 'done', function onDone() {
-      console.log( 'done' );
+      // console.log( 'done' );
 
       if( self.options.isotope ) {
         bindIsotope( jQuery( self ), self.options.isotope );
