@@ -1,16 +1,11 @@
 /**
  * Gallery
  *
- * @todo Add imagesloaded module so Isotope isn't bound too early.
- *
+ * @version 1.0.1
  * @author potanin@UD
  */
-define( 'udx.ui.gallery', [ 'jquery.isotope', 'jquery.fancybox' ], function Gallery() {
+define( 'udx.ui.gallery', [ 'udx.utility.imagesloaded', 'jquery.isotope', 'jquery.fancybox' ], function Gallery() {
   // console.debug( 'udx.ui.gallery', 'loaded' );
-
-  document.addEventListener( 'DOMContentLoaded', function() {
-    // console.debug( 'DOMContentLoaded' );
-  });
 
   /**
    * Bind Fancybox.
@@ -18,8 +13,6 @@ define( 'udx.ui.gallery', [ 'jquery.isotope', 'jquery.fancybox' ], function Gall
    */
   function bindFancybox( element, options ) {
     // console.debug( 'udx.ui.gallery', 'bindFancybox', options );
-
-    // data-fancybox-group
 
     jQuery( 'a', element ).fancybox( options );
 
@@ -30,7 +23,7 @@ define( 'udx.ui.gallery', [ 'jquery.isotope', 'jquery.fancybox' ], function Gall
    *
    */
   function bindIsotope( element, options ) {
-    // console.debug( 'udx.ui.gallery', 'bindIsotope', options );
+    console.debug( 'udx.ui.gallery', 'bindIsotope', options );
 
     var isotope = require( 'jquery.isotope' );
 
@@ -56,6 +49,24 @@ define( 'udx.ui.gallery', [ 'jquery.isotope', 'jquery.fancybox' ], function Gall
     // console.debug( 'udx.ui.gallery', 'ready' );
 
     var self = this;
+    var imagesLoaded = require( 'udx.utility.imagesloaded' )( this );
+
+    imagesLoaded.on( 'done', function onDone() {
+      console.log( 'done' );
+
+      if( self.options.isotope ) {
+        bindIsotope( jQuery( self ), self.options.isotope );
+      }
+
+      if( self.options.fancybox ) {
+        bindFancybox( jQuery( self ), self.options.fancybox );
+      }
+
+    });
+
+    imagesLoaded.on( 'fail', function onFail( error ) {
+      console.error( 'udx.ui.gallery', error );
+    });
 
     // Set default optiosn.
     this.options = jQuery.extend( this.options, {
@@ -78,18 +89,6 @@ define( 'udx.ui.gallery', [ 'jquery.isotope', 'jquery.fancybox' ], function Gall
         }
       }
     });
-
-    if( this.options.isotope ) {
-      window.setTimeout( function() {
-        bindIsotope( jQuery( self ), self.options.isotope );
-      }, 100 )
-    }
-
-    if( this.options.fancybox ) {
-      window.setTimeout( function() {
-        bindFancybox( jQuery( self ), self.options.fancybox );
-      }, 200 );
-    }
 
     return this;
 
