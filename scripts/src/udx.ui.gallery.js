@@ -23,7 +23,7 @@ define( 'udx.ui.gallery', [ 'udx.utility.imagesloaded', 'jquery.isotope', 'jquer
    *
    */
   function bindIsotope( element, options ) {
-    console.debug( 'udx.ui.gallery', 'bindIsotope', options );
+    // console.debug( 'udx.ui.gallery', 'bindIsotope', options );
 
     var isotope = require( 'jquery.isotope' );
 
