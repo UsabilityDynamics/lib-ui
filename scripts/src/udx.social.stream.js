@@ -11,6 +11,8 @@
  * var isotope = require( 'isotope' );
  * new isotope( jQuery( '.stream' ).get( 0 ) );
  *
+ * @todo Add inifinite loading.
+ * @todo Add data-request limit batching.
  */
 define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybox', 'udx.utility.imagesloaded' ], function SocialStream() {
   debug( 'SocialStream' );
@@ -312,6 +314,14 @@ define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybo
 
       $load.remove();
     },
+    /**
+     * Create Stream
+     *
+     * @param obj
+     * @param s
+     * @param f1
+     * @param f2
+     */
     createstream: function( obj, s, f1, f2 ) {
       debug( 'createstream' );
 
@@ -341,6 +351,12 @@ define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybo
       });
 
     },
+
+    /**
+     * Create Wall
+     *
+     * @param obj
+     */
     createwall: function createwall( obj ) {
       debug( 'createwall' );
 
@@ -379,6 +395,7 @@ define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybo
       var $container = jQuery( '.stream', obj ), filters = {}
 
       jQuery( '.controls', obj ).delegate( 'a', 'click', function() {
+        debug( '.controls:click' );
         var x = jQuery( this ).attr( 'class' );
         switch( x ) {
           case 'prev':
@@ -399,7 +416,9 @@ define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybo
         }
         return false;
       });
+
       jQuery( '.filter', obj ).delegate( 'a', 'click', function() {
+        debug( '.filter:click' );
         if( opt.wall == false ) {
           var rel = jQuery( this ).attr( 'rel' );
           if( $( this ).parent().hasClass( 'active' ) ) {
@@ -1001,7 +1020,7 @@ define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybo
         if( opt.wall == true ) {
 
           require( 'udx.utility.imagesloaded' )( stream.get( 0 ), function() {
-            debug( 'stream images loaded' );
+            debug( 'getFeed:complete', 'stream images loaded' );
             stream.get(0).isotope.insert( $newItems );
           });
 
@@ -1221,6 +1240,11 @@ define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybo
 
   }
 
+  /**
+   *
+   * @todo Enable filters, old method may need to be udpated.
+   *
+   */
   function enableFilters() {
     debug( 'enableFilters' );
 
@@ -1236,25 +1260,30 @@ define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybo
       var selector;
       var $a = $i.parents('.dcsns-toolbar');
       var $b = $a.next();
-      var $c = jQuery('.stream',$b);
+      var streamElement = jQuery('.stream',$b);
 
       jQuery('.filter a',$a).removeClass('iso-active');
       $i.addClass('iso-active');
+
       filters[ $i.data('group') ] = $i.data('filter');
 
       for (prop in filters){
         isoFilters.push(filters[ prop ])
       }
 
-      selector = isoFilters.join('')+':visible';
-
       return false;
 
+      // selector = isoFilters.join('') + ':visible';
+
       // @todo Get isotope to work here, if needed.
-      $c.get( 0 ).isotope({
-        filter: selector,
+      new Isotope( streamElement.get( 0 ), {
+        filter: isoFilters.join( '' ),
         sortBy: 'postDate'
       });
+
+      // debug( 'enableFilters', 'filter', isoFilters.join( '' ) );
+
+      return false;
 
     });
 

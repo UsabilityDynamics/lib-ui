@@ -7,13 +7,24 @@
     <title>Social Stream Example</title>
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
+      .stream {
+        list-style: none;
+      }
       .stream-item-wrapper {
         border: 1px solid red;
-        max-width: 300px;
-        padding: 1em;
-        margin: 1em;
+        width: 200px;
+        padding: 10px;
+        margin: 10px;
+        overflow: hidden;
+      }
+      .stream-item-wrapper.dcsns-youtube {
+        width: 400px;
       }
       .social-stream-image {
+        max-width: 100%;
+      }
+
+      .section-text img {
         max-width: 100%;
       }
     </style>
@@ -28,7 +39,7 @@
       data-callback="http://smftampa.com/manage/admin-ajax.php?action=social_stream_twitter&shortcode=aW9mSGthTUNDenhSMTJWdDl2VUwxZzpqeXpTbDR6ZzI2SGFCUDllZWZUV1pIam9qZ1dVTXhrN1hVeUo4SjNxaXFZOjEwMTQ4NTgwNC1zaEdYak4wRDQzdVU3Q3RDQkhhTUw1Szh1eWNIcWd2RU1kNWdIdHJZOg=="
       data-wall="true"
       data-rotate_direction="up"
-      data-limit="4"
+      data-limit="50"
       data-remove=","
       data-twitter_search_for="Zedd"
       data-twitter_show_text="text"
