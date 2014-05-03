@@ -11,7 +11,7 @@
  * var isotope = require( 'isotope' );
  * new isotope( jQuery( '.stream' ).get( 0 ) );
  *
- * @todo Add inifinite loading.
+ * @todo Add inifinite loading and pagination, detected from screen height, setting lower value for mobile devices.
  * @todo Add data-request limit batching.
  */
 define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybox', 'udx.utility.imagesloaded' ], function SocialStream() {
@@ -476,19 +476,24 @@ define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybo
     debug( 'getFeed' );
 
     var stream = jQuery( '.stream', obj );
-    var list = [], d = '', px = 300, c = [], data, href, url, n = opt.limit, txt = [], src;
+    var list = [];
+    var d = '';
+    var px = 300, c = [], data, href, url, n = opt.limit, txt = [];
+    var src;
     var frl = 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=' + n + '&callback=?&q=';
+    var cp;
+    var cq;
 
     switch( type ) {
 
       case 'facebook':
-        var cp = id.split( '/' );
+        cp = id.split( '/' );
         url = url = cp.length > 1 ? 'https://graph.facebook.com/' + cp[1] + '/photos?fields=id,link,from,name,picture,images,comments&limit=' + n : frl + encodeURIComponent( 'https://www.facebook.com/feeds/page.php?id=' + id + '&format=rss20' );
         break;
 
       case 'twitter':
         var curl = o.url.replace( /\&#038;/gi, "&" );
-        var cp = id.split( '/' ), cq = id.split( '#' ), cu = o.url.split( '?' ), replies = o.replies == true ? '&exclude_replies=false' : '&exclude_replies=true';
+        cp = id.split( '/' ), cq = id.split( '#' ), cu = o.url.split( '?' ), replies = o.replies == true ? '&exclude_replies=false' : '&exclude_replies=true';
         var param = '&include_entities=true&include_rts=' + o.retweets + replies;
         url1 = cu.length > 1 ? curl + '&' : curl + '?';
         url = cp.length > 1 ? url1 + 'url=list&list_id=' + cp[1] + '&per_page=' + n + param : url1 + 'url=timeline&screen_name=' + id + '&count=' + n + param;
@@ -506,7 +511,8 @@ define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybo
         break;
 
       case 'youtube':
-        var cp = id.split( '/' ), cq = id.split( '#' );
+        cp = id.split( '/' );
+        cq = id.split( '#' );
         n = n > 50 ? 50 : n;
         href = 'https://www.youtube.com/';
         href += cq.length > 1 ? 'results?search_query=' + encodeURIComponent( cq[1] ) : 'user/' + id;
@@ -521,7 +527,7 @@ define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybo
         break;
 
       case 'flickr':
-        var cq = id.split( '/' ), fd = cq.length > 1 ? 'groups_pool' : 'photos_public';
+        cq = id.split( '/' ), fd = cq.length > 1 ? 'groups_pool' : 'photos_public';
         id = cq.length > 1 ? cq[1] : id;
         href = 'https://www.flickr.com/photos/' + id;
         url = 'http://api.flickr.com/services/feeds/' + fd + '.gne?id=' + id + '&lang=' + o.lang + '&format=json&jsoncallback=?';
@@ -533,7 +539,7 @@ define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybo
         break;
 
       case 'pinterest':
-        var cp = id.split( '/' );
+        cp = id.split( '/' );
         url = 'https://www.pinterest.com/' + id + '/';
         url += cp.length > 1 ? 'rss' : 'feed.rss';
         href = 'http://www.pinterest.com/' + id;
@@ -579,7 +585,7 @@ define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybo
       case 'instagram':
         href = '#';
         url = 'https://api.instagram.com/v1';
-        var cp = id.substr( 0, 1 ), cq = id.split( cp ), url1 = encodeURIComponent( cq[1] ), qs = '', ts = 0;
+        cp = id.substr( 0, 1 ), cq = id.split( cp ), url1 = encodeURIComponent( cq[1] ), qs = '', ts = 0;
         switch( cp ) {
           case '?':
             var p = cq[1].split( '/' );
@@ -1006,6 +1012,7 @@ define( 'udx.social.stream', [ 'jquery', 'modernizr', 'isotope', 'jquery.fancybo
                   list.push( out );
                 }
               }
+
             }
           });
         } else if( opt.debug == true ) {
