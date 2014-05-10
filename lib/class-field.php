@@ -34,10 +34,12 @@ namespace UsabilityDynamics\UI {
           $this->{$i} = $v;
         }
       }
-      
+
       /**
        * Initializes an object
-       * 
+       *
+       * @param array $params
+       *
        * @return object
        */
       static public function init( $params = array() ) {

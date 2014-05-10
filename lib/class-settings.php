@@ -17,12 +17,15 @@ namespace UsabilityDynamics\UI {
       public $settings;
       
       public $schema;
-    
+
       /**
        * Constructor
        *
-       * @param UsabilityDynamics\Settings object $settings
-       * @param array $args
+       * @param
+       * UsabilityDynamics\UI\Settings object $settings
+       * @param                            $schema
+       *
+       * @internal param array $args
        */
       public function __construct( $settings, $schema ) {
         
@@ -150,12 +153,12 @@ namespace UsabilityDynamics\UI {
       public function render() {
         wp_enqueue_script( 'jquery-ui-tabs' );
         wp_enqueue_script( 'accordion' );
-        wp_enqueue_script( 'ud-ui-settings', plugins_url( '/scripts/admin/ui.settings.js', dirname( dirname( __FILE__ ) ) ), array( 
+        wp_enqueue_script( 'ud-ui-settings', plugins_url( '/static/scripts/admin/ui.settings.js', dirname( dirname( __FILE__ ) ) ), array(
           'jquery-ui-tabs', 
           'accordion' 
         ) );
         
-        wp_enqueue_style( 'ud-ui-settings', plugins_url( '/styles/admin/ui.settings.css', dirname( dirname( __FILE__ ) ) ) );
+        wp_enqueue_style( 'ud-ui-settings', plugins_url( '/static/styles/admin/ui.settings.css', dirname( dirname( __FILE__ ) ) ) );
         
         //** Initializes settings UI */
         foreach ( $this->get_fields() as $field ) {
@@ -173,7 +176,7 @@ namespace UsabilityDynamics\UI {
         if( is_array( $data ) ) {
           extract( $data );
         }
-        $path = dirname( __DIR__ ) . '/templates/admin/' . $name . '.php';
+        $path = dirname( __DIR__ ) . '/static/templates/admin/' . $name . '.php';
         if( file_exists( $path ) ) {
           include( $path );
         }
@@ -303,16 +306,16 @@ namespace UsabilityDynamics\UI {
       private function is_valid_schema( $schema ) {
         return $schema;
       }
-      
+
       /**
        * Resolve dot-notated key.
        *
        * @source http://stackoverflow.com/questions/14704984/best-way-for-dot-notation-access-to-multidimensional-array-in-php
        *
-       * @param       $a
        * @param       $path
        * @param null  $default
        *
+       * @internal param $a
        * @internal param array $a
        * @return array|null
        */

@@ -45,13 +45,13 @@
   "extra": {
     "component": {
       "scripts": [
-        "scripts/ui.js",
-        "scripts/ui.markdown.js",
-        "scripts/ui.jquery-tabs.js"
+        "static/scripts/ui.js",
+        "static/scripts/ui.markdown.js",
+        "static/scripts/ui.jquery-tabs.js"
       ],
       "styles": [
-        "styles/ui.css",
-        "styles/ui.less"
+        "static/styles/ui.css",
+        "static/styles/ui.less"
       ]
     }
   },

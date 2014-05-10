@@ -19,9 +19,9 @@ module.exports = function( grunt ) {
           relativeUrls: true
         },
         files: {
-          'styles/ui.css': [ 'styles/src/ui.less' ],
-          'styles/ui.markdown.css': [ 'styles/src/ui.markdown.less' ],
-          'styles/admin/ui.settings.css': [ 'styles/src/admin/ui.settings.less' ]
+          'static/styles/ui.css': [ 'static/styles/src/ui.less' ],
+          'static/styles/ui.markdown.css': [ 'static/styles/src/ui.markdown.less' ],
+          'static/styles/admin/ui.settings.css': [ 'static/styles/src/admin/ui.settings.less' ]
         }
       },
       development: {
@@ -30,9 +30,9 @@ module.exports = function( grunt ) {
           relativeUrls: true
         },
         files: {
-          'styles/ui.dev.css': [ 'styles/src/ui.less' ],
-          'styles/ui.markdown.dev.css': [ 'styles/src/ui.markdown.less' ],
-          'styles/admin/ui.settings.dev.css': [ 'styles/src/admin/ui.settings.less' ]
+          'static/styles/ui.dev.css': [ 'static/styles/src/ui.less' ],
+          'static/styles/ui.markdown.dev.css': [ 'static/styles/src/ui.markdown.less' ],
+          'static/styles/admin/ui.settings.dev.css': [ 'static/styles/src/admin/ui.settings.less' ]
         }
       }
     },
@@ -57,15 +57,15 @@ module.exports = function( grunt ) {
         files: [
           {
             expand: true,
-            cwd: 'scripts/src',
+            cwd: 'static/scripts/src',
             src: [ '*.js' ],
-            dest: 'scripts'
+            dest: 'static/scripts'
           },
           {
             expand: true,
-            cwd: 'scripts/src/admin',
+            cwd: 'static/scripts/src/admin',
             src: [ '*.js' ],
-            dest: 'scripts/admin'
+            dest: 'static/scripts/admin'
           }
         ]
       }
@@ -79,15 +79,15 @@ module.exports = function( grunt ) {
       },
       less: {
         files: [
-          'styles/src/*.less',
-          'styles/src/admin/*.less',
+          'static/styles/src/*.less',
+          'static/styles/src/admin/*.less',
         ],
         tasks: [ 'less' ]
       },
       js: {
         files: [
-          'scripts/src/*.js',
-          'scripts/src/admin/*.js',
+          'static/scripts/src/*.js',
+          'static/scripts/src/admin/*.js',
         ],
         tasks: [ 'uglify' ]
       }
