@@ -203,6 +203,10 @@ namespace UsabilityDynamics {
 
       static public function add_plugin_page_tab() {}
 
+      static public function include_page( $args = array() ) {
+
+      }
+
     }
 
   }

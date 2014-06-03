@@ -14,9 +14,9 @@ namespace UsabilityDynamics\UI {
      */
     class Settings {
 
-      public $settings;
-      
-      public $schema;
+      private $_settings;
+
+      private $_schema;
 
       /**
        * Constructor
@@ -27,19 +27,21 @@ namespace UsabilityDynamics\UI {
        *
        * @internal param array $args
        */
-      public function __construct( $settings, $schema ) {
+      public function __construct( $settings = null, $schema = null ) {
         
         //** Break if settings var is incorrect */
-        if( !is_subclass_of( $settings, 'UsabilityDynamics\Settings' ) ) {
+        if( $settings && !is_subclass_of( $settings, 'UsabilityDynamics\Settings' ) ) {
+
           if( get_class( $settings ) !== 'UsabilityDynamics\Settings' ) {
-            return;
+            // return;
           }
+
         }
 
-        $this->settings = $settings;
+        $this->_settings = $settings;
         
         //** Break if schema is incorrect */
-        if( !$this->schema = $this->is_valid_schema( $schema ) ) {
+        if( $schema && ( !$this->_schema = $this->is_valid_schema( $schema ) ) ) {
           return;
         }
         
@@ -48,10 +50,25 @@ namespace UsabilityDynamics\UI {
         foreach ( $this->get_fields() as $field ) {
           $field->add_actions();
         }
-        add_action( 'admin_menu', array( $this, 'admin_menu' ), 100 );
-        
+
+        if( !did_action( 'admin_menu' ) ) {
+          add_action( 'admin_menu', array( $this, 'admin_menu' ), 100 );
+        }
+
       }
-      
+
+      public function template( $args ) {
+
+        die( '<pre>' . print_r( array(
+            'action' => current_action(),
+            'filter' => current_filter(),
+        ), true ) . '</pre>' );
+
+        die( '<pre>' . print_r( $this, true ) . '</pre>' );
+        include_once( $this->_settings->views );
+
+      }
+
       /**
        * Multiple actions (action on admin_menu hook):
        * - parse (validate) schema
@@ -62,7 +79,7 @@ namespace UsabilityDynamics\UI {
       public function admin_menu() {
         global $submenu, $menu;
         
-        extract( $this->schema[ 'configuration' ] );
+        extract( $this->_schema[ 'configuration' ] );
         
         $parent_slug = false;
         $capability = 'manage_options';
@@ -135,12 +152,12 @@ namespace UsabilityDynamics\UI {
           }
           if( $match ) {
             $changed = true;
-            $this->settings->set( $id, $v );
+            $this->_settings->set( $id, $v );
           }
         }
         
         if( $changed ) {
-          $this->settings->commit();
+          $this->_settings->commit();
           wp_redirect( $_POST[ '_wp_http_referer' ] . '&message=updated' );
           exit;
         }
@@ -190,7 +207,7 @@ namespace UsabilityDynamics\UI {
       public function get( $key, $type = 'settings', $default = null ) {
         switch( $type ) {
           case 'settings':
-            return $this->settings->get( $key, $default );
+            return $this->_settings->get( $key, $default );
             break;
           case 'schema':
             // Resolve dot-notated key.
@@ -198,7 +215,7 @@ namespace UsabilityDynamics\UI {
               return $this->parse_schema( $key, $default );
             }
             // Return value or default.
-            return isset( $this->schema[ $key ] ) ? $this->schema[ $key ] : $default;
+            return isset( $this->_schema[ $key ] ) ? $this->_schema[ $key ] : $default;
             break;
         }
         return false;
@@ -321,7 +338,7 @@ namespace UsabilityDynamics\UI {
        * @return array|null
        */
       private function parse_schema( $path, $default = null ) {
-        $current = $this->schema;
+        $current = $this->_schema;
         $p = strtok( $path, '.' );
         while( $p !== false ) {
           if( !isset( $current[ $p ] ) ) {
