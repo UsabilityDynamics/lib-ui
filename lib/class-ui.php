@@ -28,9 +28,14 @@ namespace UsabilityDynamics {
        * @internal param object|string $screen The screen identifier.
        * @internal param string $context The meta box context.
        * @internal param mixed $object gets passed to the section callback function as first parameter.
+       *
+       * @param $screen
+       * @param $context
+       * @param $object
+       *
        * @return int number of meta boxes as accordion sections.
        */
-      static public function do_tabbed_sections() {
+      static public function do_sections( $screen, $context, $object ) {
         global $wp_meta_boxes;
 
         wp_enqueue_script( 'accordion' );
@@ -43,48 +48,100 @@ namespace UsabilityDynamics {
         $page = $screen->id;
 
         $hidden = get_hidden_meta_boxes( $screen );
+
         ?>
-        <div id="side-sortables" class="accordion-container">
+        <div class="accordion-container">
           <ul class="outer-border">
 
-            <?php
-        $i = 0;
-        $first_open = false;
-        do {
-          if ( ! isset( $wp_meta_boxes ) || ! isset( $wp_meta_boxes[$page] ) || ! isset( $wp_meta_boxes[$page][$context] ) )
-            break;
+          <?php
+          $i = 0;
+          $first_open = false;
+          do {
+            if ( ! isset( $wp_meta_boxes ) || ! isset( $wp_meta_boxes[$page] ) || ! isset( $wp_meta_boxes[$page][$context] ) )
+              break;
 
-          foreach ( array( 'high', 'core', 'default', 'low' ) as $priority ) {
-            if ( isset( $wp_meta_boxes[$page][$context][$priority] ) ) {
-              foreach ( $wp_meta_boxes[$page][$context][$priority] as $box ) {
-                if ( false == $box || ! $box['title'] )
-                  continue;
-                $i++;
-                $hidden_class = in_array( $box['id'], $hidden ) ? 'hide-if-js' : '';
+            foreach ( array( 'high', 'core', 'default', 'low' ) as $priority ) {
+              if ( isset( $wp_meta_boxes[$page][$context][$priority] ) ) {
+                foreach ( $wp_meta_boxes[$page][$context][$priority] as $box ) {
+                  if ( false == $box || ! $box['title'] )
+                    continue;
+                  $i++;
+                  $hidden_class = in_array( $box['id'], $hidden ) ? 'hide-if-js' : '';
 
-                $open_class = '';
-                if ( ! $first_open && empty( $hidden_class ) ) {
-                  $first_open = true;
-                  $open_class = 'open';
+                  $open_class = '';
+                  if ( ! $first_open && empty( $hidden_class ) ) {
+                    $first_open = true;
+                    $open_class = 'open';
+                  }
+                  ?>
+                  <li class="control-section accordion-section <?php echo $hidden_class; ?> <?php echo $open_class; ?> <?php echo esc_attr( $box['id'] ); ?>" id="<?php echo esc_attr( $box['id'] ); ?>">
+                    <h3 class="accordion-section-title hidden" tabindex="0" title="<?php echo esc_attr( $box['title'] ); ?>"><?php echo esc_html( $box['title'] ); ?></h3>
+                    <div class="accordion-section-content <?php postbox_classes( $box['id'], $page ); ?>">
+                      <div class="inside">
+                        <?php call_user_func( $box['callback'], $object, $box ); ?>
+                      </div>
+                    </div>
+                  </li>
+                <?php
                 }
-                ?>
-                <li class="control-section accordion-section <?php echo $hidden_class; ?> <?php echo $open_class; ?> <?php echo esc_attr( $box['id'] ); ?>" id="<?php echo esc_attr( $box['id'] ); ?>">
-                  <h3 class="accordion-section-title hndle" tabindex="0" title="<?php echo esc_attr( $box['title'] ); ?>"><?php echo esc_html( $box['title'] ); ?></h3>
-                  <div class="accordion-section-content <?php postbox_classes( $box['id'], $page ); ?>">
-                    <div class="inside">
-                      <?php call_user_func( $box['callback'], $object, $box ); ?>
-                    </div><!-- .inside -->
-                  </div><!-- .accordion-section-content -->
-                </li><!-- .accordion-section -->
-              <?php
               }
             }
-          }
-        } while(0);
-        ?>
-          </ul><!-- .outer-border -->
-        </div><!-- .accordion-container -->
+          } while(0);
+          ?>
+          </ul>
+        </div>
         <?php
+
+        return $i;
+
+      }
+
+      static public function do_tabs( $screen, $context, $object ) {
+        global $wp_meta_boxes;
+
+        wp_enqueue_script( 'accordion' );
+
+        if ( empty( $screen ) )
+          $screen = get_current_screen();
+        elseif ( is_string( $screen ) )
+          $screen = convert_to_screen( $screen );
+
+        $page = $screen->id;
+
+        $hidden = get_hidden_meta_boxes( $screen );
+
+        ?>
+
+          <?php
+          $i = 0;
+          $first_open = false;
+          do {
+            if ( ! isset( $wp_meta_boxes ) || ! isset( $wp_meta_boxes[$page] ) || ! isset( $wp_meta_boxes[$page][$context] ) )
+              break;
+
+            foreach ( array( 'high', 'core', 'default', 'low' ) as $priority ) {
+              if ( isset( $wp_meta_boxes[$page][$context][$priority] ) ) {
+                foreach ( $wp_meta_boxes[$page][$context][$priority] as $box ) {
+                  if ( false == $box || ! $box['title'] )
+                    continue;
+                  $i++;
+                  $hidden_class = in_array( $box['id'], $hidden ) ? 'hide-if-js' : '';
+
+                  $open_class = '';
+                  if ( ! $first_open && empty( $hidden_class ) ) {
+                    $first_open = true;
+                    $open_class = 'open';
+                  }
+                  ?>
+                  <a class="nav-tab accordion-section-title control-section <?php echo $hidden_class; ?> <?php echo $open_class; ?> <?php echo esc_attr( $box['id'] ); ?>" data-box-id="<?php echo esc_attr( $box['id'] ); ?>"><?php echo esc_html( $box['title'] ); ?></a>
+                <?php
+                }
+              }
+            }
+          } while(0);
+          ?>
+        <?php
+
         return $i;
 
       }
@@ -103,9 +160,14 @@ namespace UsabilityDynamics {
        * @internal param object|string $screen The screen identifier.
        * @internal param string $context The meta box context.
        * @internal param mixed $object gets passed to the section callback function as first parameter.
+       *
+       * @param $screen
+       * @param $context
+       * @param $object
+       *
        * @return int number of meta boxes as accordion sections.
        */
-      static public function do_accordion_sections() {
+      static public function do_accordion_sections( $screen, $context, $object  ) {
         global $wp_meta_boxes;
 
         wp_enqueue_script( 'accordion' );
@@ -118,48 +180,50 @@ namespace UsabilityDynamics {
         $page = $screen->id;
 
         $hidden = get_hidden_meta_boxes( $screen );
+
         ?>
-        <div id="side-sortables" class="accordion-container">
+        <div class="accordion-container">
           <ul class="outer-border">
 
-            <?php
-        $i = 0;
-        $first_open = false;
-        do {
-          if ( ! isset( $wp_meta_boxes ) || ! isset( $wp_meta_boxes[$page] ) || ! isset( $wp_meta_boxes[$page][$context] ) )
-            break;
+          <?php
+          $i = 0;
+          $first_open = false;
+          do {
+            if ( ! isset( $wp_meta_boxes ) || ! isset( $wp_meta_boxes[$page] ) || ! isset( $wp_meta_boxes[$page][$context] ) )
+              break;
 
-          foreach ( array( 'high', 'core', 'default', 'low' ) as $priority ) {
-            if ( isset( $wp_meta_boxes[$page][$context][$priority] ) ) {
-              foreach ( $wp_meta_boxes[$page][$context][$priority] as $box ) {
-                if ( false == $box || ! $box['title'] )
-                  continue;
-                $i++;
-                $hidden_class = in_array( $box['id'], $hidden ) ? 'hide-if-js' : '';
+            foreach ( array( 'high', 'core', 'default', 'low' ) as $priority ) {
+              if ( isset( $wp_meta_boxes[$page][$context][$priority] ) ) {
+                foreach ( $wp_meta_boxes[$page][$context][$priority] as $box ) {
+                  if ( false == $box || ! $box['title'] )
+                    continue;
+                  $i++;
+                  $hidden_class = in_array( $box['id'], $hidden ) ? 'hide-if-js' : '';
 
-                $open_class = '';
-                if ( ! $first_open && empty( $hidden_class ) ) {
-                  $first_open = true;
-                  $open_class = 'open';
+                  $open_class = '';
+                  if ( ! $first_open && empty( $hidden_class ) ) {
+                    $first_open = true;
+                    $open_class = 'open';
+                  }
+                  ?>
+                  <li class="control-section accordion-section <?php echo $hidden_class; ?> <?php echo $open_class; ?> <?php echo esc_attr( $box['id'] ); ?>" id="<?php echo esc_attr( $box['id'] ); ?>">
+                    <h3 class="accordion-section-title hndle" tabindex="0" title="<?php echo esc_attr( $box['title'] ); ?>"><?php echo esc_html( $box['title'] ); ?></h3>
+                    <div class="accordion-section-content <?php postbox_classes( $box['id'], $page ); ?>">
+                      <div class="inside">
+                        <?php call_user_func( $box['callback'], $object, $box ); ?>
+                      </div>
+                    </div>
+                  </li>
+                <?php
                 }
-                ?>
-                <li class="control-section accordion-section <?php echo $hidden_class; ?> <?php echo $open_class; ?> <?php echo esc_attr( $box['id'] ); ?>" id="<?php echo esc_attr( $box['id'] ); ?>">
-                  <h3 class="accordion-section-title hndle" tabindex="0" title="<?php echo esc_attr( $box['title'] ); ?>"><?php echo esc_html( $box['title'] ); ?></h3>
-                  <div class="accordion-section-content <?php postbox_classes( $box['id'], $page ); ?>">
-                    <div class="inside">
-                      <?php call_user_func( $box['callback'], $object, $box ); ?>
-                    </div><!-- .inside -->
-                  </div><!-- .accordion-section-content -->
-                </li><!-- .accordion-section -->
-              <?php
               }
             }
-          }
-        } while(0);
+          } while(0);
         ?>
-          </ul><!-- .outer-border -->
-        </div><!-- .accordion-container -->
+          </ul>
+        </div>
         <?php
+
         return $i;
 
       }
