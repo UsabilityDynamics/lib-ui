@@ -35,7 +35,7 @@ namespace UsabilityDynamics {
        *
        * @return int number of meta boxes as accordion sections.
        */
-      static public function do_sections( $screen, $context, $object ) {
+      static public function do_sections( $screen = null, $context = 'main', $object = array() ) {
         global $wp_meta_boxes;
 
         wp_enqueue_script( 'accordion' );
@@ -96,7 +96,7 @@ namespace UsabilityDynamics {
 
       }
 
-      static public function do_tabs( $screen, $context, $object ) {
+      static public function do_tabs( $screen = null, $context = 'main', $object = array() ) {
         global $wp_meta_boxes;
 
         wp_enqueue_script( 'accordion' );
@@ -167,7 +167,7 @@ namespace UsabilityDynamics {
        *
        * @return int number of meta boxes as accordion sections.
        */
-      static public function do_accordion_sections( $screen, $context, $object  ) {
+      static public function do_accordion_sections( $screen = null, $context = 'main', $object = array() ) {
         global $wp_meta_boxes;
 
         wp_enqueue_script( 'accordion' );
