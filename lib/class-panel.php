@@ -123,7 +123,16 @@ namespace UsabilityDynamics\UI {
        * @return mixed
        */
       private function get( $key = null ) {
-        return $key ? $this->_settings[ 'params' ]->{$key} : $this->_settings[ 'params' ];
+        return $key ? ( isset( $this->_settings[ 'params' ]->{$key} ) ? $this->_settings[ 'params' ]->{$key} : null ) : $this->_settings[ 'params' ];
+      }
+
+      /**
+       * Return extractable array.
+       *
+       * @return array
+       */
+      private function get_extract() {
+        return (array) $this->_settings[ 'params' ];
       }
 
       /**
@@ -143,12 +152,56 @@ namespace UsabilityDynamics\UI {
        * Standard HTML5 Render
        * @param null $extra
        */
-      public function render( $extra = null ) {
+      public function section( $extra = null ) {
         $this->set( $extra );
 
-        echo '<section data-panel="' . $this->get( '_id' ) . '">';
-        include( $this->_settings[ '_path' ] );
+        extract( $this->get_extract(), EXTR_SKIP );
+
+        echo '<section data-section-id="' . $this->get( '_id' ) . '">';
+
+        if( isset( $this->_settings[ '_path' ] ) && is_file( $this->_settings[ '_path' ] ) ) {
+          include( $this->_settings[ '_path' ] );
+        }
+
         echo '</section>';
+
+      }
+
+      /**
+       * Aside Render
+       * @param null $extra
+       */
+      public function aside( $extra = null ) {
+        $this->set( $extra );
+
+        extract( $this->get_extract(), EXTR_SKIP );
+
+        echo '<aside data-aside-id="' . $this->get( '_id' ) . '">';
+
+        if( isset( $this->_settings[ '_path' ] ) && is_file( $this->_settings[ '_path' ] ) ) {
+          include( $this->_settings[ '_path' ] );
+        }
+
+        echo '</aside>';
+
+      }
+
+      /**
+       * Modal Render
+       * @param null $extra
+       */
+      public function modal( $extra = null ) {
+        $this->set( $extra );
+
+        extract( $this->get_extract(), EXTR_SKIP );
+
+        echo '<div data-modal-id="' . $this->get( '_id' ) . '">';
+
+        if( isset( $this->_settings[ '_path' ] ) && is_file( $this->_settings[ '_path' ] ) ) {
+          include( $this->_settings[ '_path' ] );
+        }
+
+        echo '</div>';
 
       }
 
@@ -157,12 +210,17 @@ namespace UsabilityDynamics\UI {
        *
        * @param null $args
        */
-      public function meta_box( $args = null ) {
-
+      public function shortcode( $args = null ) {
         $this->set( $extra );
 
-        echo '<div data-panel="' . $this->get( '_id' ) . '">';
-        include( $this->_settings[ '_path' ] );
+        extract( $this->get_extract(), EXTR_SKIP );
+
+        echo '<div data-shortcode-id="' . $this->get( '_id' ) . '">';
+
+        if( isset( $this->_settings[ '_path' ] ) && is_file( $this->_settings[ '_path' ] ) ) {
+          include( $this->_settings[ '_path' ] );
+        }
+
         echo '</div>';
 
       }
