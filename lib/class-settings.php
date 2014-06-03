@@ -35,6 +35,7 @@ namespace UsabilityDynamics\UI {
             return;
           }
         }
+
         $this->settings = $settings;
         
         //** Break if schema is incorrect */
