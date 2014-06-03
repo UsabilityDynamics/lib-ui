@@ -34,14 +34,14 @@ namespace UsabilityDynamics\UI {
 
         $this->_settings = array(
           '_id' => $id,
-          'paths' => null,
-          'data' => null
+          'params' => null,
+          'meta' => null
         );
 
         $this->_settings[ '_id' ]     = $this->_settings[ '_id' ] ? $this->_settings[ '_id' ] : $id;
-        $this->_settings[ '_path' ]   = $this->resolve_path( $settings[ 'paths' ] );
-        $this->_settings[ 'data' ]    = $this->get_file_data();
-        $this->_settings[ 'params' ]  = array();
+        $this->_settings[ '_path' ]   = $this->resolve_path( isset( $settings[ 'paths' ] ) ? array_filter( (array) $settings[ 'paths' ] ) : array() );
+        $this->_settings[ 'meta' ]    = $this->get_file_meta();
+        $this->_settings[ 'params' ]  = isset( $settings[ 'params' ] ) ? $settings[ 'params' ] : array();
 
         $this->set(array(
           '_id' => $this->_settings[ '_id' ],
@@ -57,7 +57,7 @@ namespace UsabilityDynamics\UI {
        *
        * @return array
        */
-      private function get_file_data( $paths = array() ) {
+      private function get_file_meta( $paths = array() ) {
 
         foreach( (array) ( $paths ? $paths : $this->_settings[ '_path' ] ) as $path ) {
 
@@ -65,10 +65,10 @@ namespace UsabilityDynamics\UI {
             continue;
           }
 
-          $_data = get_file_data( $path, self::$headers );
+          $_meta = get_file_data( $path, self::$headers );
 
-          if( $_data[ 'name' ] ) {
-            return array_filter( $_data );
+          if( $_meta[ 'name' ] ) {
+            return array_filter( $_meta );
           }
 
         }
@@ -111,13 +111,13 @@ namespace UsabilityDynamics\UI {
        */
       private function set( $args = array() ) {
 
-        return $this->_settings[ 'params' ] = (object) array_merge_recursive( (array) $this->_settings[ 'params' ], (array) $args );
+        return $this->_settings[ 'params' ] = (object) array_replace_recursive( (array) $this->_settings[ 'params' ], (array) $args );
 
       }
 
       /**
        * Parameter Lookup
-       * 
+       *
        * @param null $key
        *
        * @return mixed
@@ -187,41 +187,69 @@ namespace UsabilityDynamics\UI {
       }
 
       /**
-       * Modal Render
+       * Widget Render
        * @param null $extra
        */
-      public function modal( $extra = null ) {
+      public function widget( $extra = null ) {
         $this->set( $extra );
 
         extract( $this->get_extract(), EXTR_SKIP );
 
-        echo '<div data-modal-id="' . $this->get( '_id' ) . '">';
+        echo '<aside data-widget-id="' . $this->get( '_id' ) . '">';
 
         if( isset( $this->_settings[ '_path' ] ) && is_file( $this->_settings[ '_path' ] ) ) {
           include( $this->_settings[ '_path' ] );
         }
 
-        echo '</div>';
+        echo '</aside>';
+
+      }
+
+      /**
+       * Frontend Template.
+       *
+       * @param null $args
+       */
+      public function template( $args = null ) {
+        $this->set( $extra );
+
+        extract( $this->get_extract(), EXTR_SKIP );
+
+        if( isset( $this->_settings[ '_path' ] ) && is_file( $this->_settings[ '_path' ] ) ) {
+          include( $this->_settings[ '_path' ] );
+        }
 
       }
 
       /**
        * Metabox Render
        *
-       * @param null $args
+       * @example
+       *
+       *    add_shortcode( 'footag', array( $_view, 'shortcode' ) );
+       *
+       * @param array|null $atts
+       * @param string     $content
+       * @param null       $name
+       *
+       * @return string
+       * @internal param \UsabilityDynamics\UI\atts $null
        */
-      public function shortcode( $args = null ) {
-        $this->set( $extra );
+      public function shortcode( $atts = array(), $content = '', $name = null ) {
 
+        // Update settings by parsing model data against defined data.
+        $this->set( shortcode_atts( $this->get(), $atts ) );
+
+        // Extract result settings.
         extract( $this->get_extract(), EXTR_SKIP );
 
-        echo '<div data-shortcode-id="' . $this->get( '_id' ) . '">';
-
         if( isset( $this->_settings[ '_path' ] ) && is_file( $this->_settings[ '_path' ] ) ) {
+          ob_start();
           include( $this->_settings[ '_path' ] );
+          return ob_get_clean();
         }
 
-        echo '</div>';
+        return '';
 
       }
 
