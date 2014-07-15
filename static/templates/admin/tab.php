@@ -11,7 +11,7 @@
     <ul class="outer-border">
       <?php foreach( $this->get( 'sections', 'schema', array() ) as $section ) : ?>
         <?php if( !$menu || $menu[ 'id' ] == $section[ 'menu' ] ) : ?>
-          <li class="accordion-section" ><?php $this->get_template_part( 'section', array( 'section' => $section ) ); ?></li>
+          <li class="accordion-section open" ><?php $this->get_template_part( 'section', array( 'section' => $section ) ); ?></li>
         <?php endif; ?>
       <?php endforeach; ?>
     </ul>

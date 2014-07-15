@@ -57,18 +57,6 @@ namespace UsabilityDynamics\UI {
 
       }
 
-      public function template( $args ) {
-
-        die( '<pre>' . print_r( array(
-            'action' => current_action(),
-            'filter' => current_filter(),
-        ), true ) . '</pre>' );
-
-        die( '<pre>' . print_r( $this, true ) . '</pre>' );
-        include_once( $this->_settings->views );
-
-      }
-
       /**
        * Multiple actions (action on admin_menu hook):
        * - parse (validate) schema
@@ -171,12 +159,12 @@ namespace UsabilityDynamics\UI {
       public function render() {
         wp_enqueue_script( 'jquery-ui-tabs' );
         wp_enqueue_script( 'accordion' );
-        wp_enqueue_script( 'ud-ui-settings', plugins_url( '/static/scripts/admin/ui.settings.js', dirname( dirname( __FILE__ ) ) ), array(
+        wp_enqueue_script( 'ud-ui-settings', plugins_url( '/static/scripts/admin/ui.settings.js', dirname( __FILE__ ) ), array(
           'jquery-ui-tabs', 
           'accordion' 
         ) );
         
-        wp_enqueue_style( 'ud-ui-settings', plugins_url( '/static/styles/admin/ui.settings.css', dirname( dirname( __FILE__ ) ) ) );
+        wp_enqueue_style( 'ud-ui-settings', plugins_url( '/static/styles/admin/ui.settings.css', dirname( __FILE__ ) ) );
         
         //** Initializes settings UI */
         foreach ( $this->get_fields() as $field ) {
