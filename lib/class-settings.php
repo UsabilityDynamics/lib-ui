@@ -219,6 +219,7 @@ namespace UsabilityDynamics\UI {
       
         if( !empty( $group ) && !empty( $v ) ) {
           switch( $group ) {
+          
             case 'section':
               foreach( $this->get( 'fields', 'schema' ) as $field ) {
                 $field = $this->get_field( $field );
@@ -227,7 +228,9 @@ namespace UsabilityDynamics\UI {
                 }
               }
               break;
+              
             case 'menu':
+            
             case 'tab':
               $sections = array();
               foreach( $this->get( 'sections', 'schema' ) as $section ) {
@@ -242,6 +245,13 @@ namespace UsabilityDynamics\UI {
                 }
               }
               break;
+              
+            default:
+              foreach( $this->get( 'fields', 'schema' ) as $field ) {
+                $fields[] = $this->get_field( $field );
+              }
+              break;
+              
           }
         }
       
