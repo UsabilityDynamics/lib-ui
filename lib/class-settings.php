@@ -13,6 +13,15 @@ namespace UsabilityDynamics\UI {
      *
      */
     class Settings {
+    
+      /**
+       * Class version.
+       *
+       * @public
+       * @static
+       * @type string
+       */
+      public static $version = '0.1.1';
 
       private $_settings;
 
