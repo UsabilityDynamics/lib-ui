@@ -21,7 +21,7 @@ namespace UsabilityDynamics\UI {
        * @static
        * @type string
        */
-      public static $version = '0.1.1';
+      public static $version = '0.1.2';
 
       private $_settings;
 
@@ -168,12 +168,13 @@ namespace UsabilityDynamics\UI {
       public function render() {
         wp_enqueue_script( 'jquery-ui-tabs' );
         wp_enqueue_script( 'accordion' );
-        wp_enqueue_script( 'ud-ui-settings', plugins_url( '/static/scripts/admin/ui.settings.js', dirname( __FILE__ ) ), array(
+        
+        wp_enqueue_script( 'ud-ui-settings', plugin_dir_url( dirname( __DIR__ ) . '/' . basename( __FILE__ ) ) . 'static/scripts/admin/ui.settings.js', array(
           'jquery-ui-tabs', 
           'accordion' 
         ) );
         
-        wp_enqueue_style( 'ud-ui-settings', plugins_url( '/static/styles/admin/ui.settings.css', dirname( __FILE__ ) ) );
+        wp_enqueue_style( 'ud-ui-settings', plugin_dir_url( dirname( __DIR__ ) . '/' . basename( __FILE__ ) ) . 'static/styles/admin/ui.settings.css' );
         
         //** Initializes settings UI */
         foreach ( $this->get_fields() as $field ) {
