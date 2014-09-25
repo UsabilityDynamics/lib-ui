@@ -168,6 +168,7 @@ namespace UsabilityDynamics\UI {
        * 
        */
       public function render() {
+        
         wp_enqueue_script( 'jquery-ui-tabs' );
         wp_enqueue_script( 'accordion' );
         
@@ -182,6 +183,8 @@ namespace UsabilityDynamics\UI {
         foreach ( $this->get_fields() as $field ) {
           $field->admin_enqueue_scripts();
         }
+        
+        do_action( 'ud:ui:settings:render' );
         
         $this->get_template_part( 'main' );
       }
@@ -296,8 +299,10 @@ namespace UsabilityDynamics\UI {
           $field[ 'value' ] = $this->get( $field[ 'id' ] );
           $field[ 'field_name' ] = str_replace( '.', '|', $field[ 'id' ] );
           $field[ 'id' ] = sanitize_key( str_replace( '.', '_', $field[ 'id' ] ) );
+          $field = apply_filters( "ud:ui:field", $field );
           
           $field = call_user_func( array( $this->get_field_class_name( $field ), 'init' ), $field );
+          
           if( !$field ) {
             return false;
           }
