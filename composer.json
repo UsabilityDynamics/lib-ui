@@ -1,7 +1,7 @@
 {
-  "name": "usabilitydynamics/lib-ui",
+  "name": "udx/lib-ui",
   "type": "library",
-  "homepage": "http://github.com/UsabilityDynamics/wp-ui",
+  "homepage": "https://github.com/udx/lib-ui",
   "keywords": [
     "ui",
     "editor",
@@ -12,12 +12,12 @@
   "repositories": [
     {
       "type": "composer",
-      "url": "http://repository.usabilitydynamics.com"
+      "url": "https://repository.usabilitydynamics.com"
     }
   ],
   "require": {
     "php": ">=5.3",
-    "usabilitydynamics/lib-utility": "~0.3"
+    "udx/lib-utility": "~0.3"
   },
   "require-dev": {},
   "autoload": {
@@ -29,19 +29,19 @@
     {
       "name": "Andy Potanin",
       "email": "andy.potanin@usabilitydynamics.com",
-      "homepage": "http://usabilitydynamics.com",
+      "homepage": "https://www.usabilitydynamics.com",
       "role": "Developer"
     },
     {
       "name": "Maxim Peshkov",
       "email": "maxim.peshkov@usabilitydynamics.com",
-      "homepage": "http://usabilitydynamics.com",
+      "homepage": "https://www.usabilitydynamics.com",
       "role": "Developer"
     },
     {
       "name": "Anton Korotkov",
       "email": "anton.korotkov@usabilitydynamics.com",
-      "homepage": "http://usabilitydynamics.com",
+      "homepage": "https://www.usabilitydynamics.com",
       "role": "Developer"
     }
   ],
